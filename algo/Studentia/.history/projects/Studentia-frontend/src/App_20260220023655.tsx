@@ -5,12 +5,7 @@ import { getAlgodConfigFromViteEnvironment, getKmdConfigFromViteEnvironment } fr
 import { Routes, Route } from "react-router-dom";
 
 // pages
-import StudentDashboard from "./pages/StudentDashboard";
-import DashboardHome from "./pages/DashboardHome";
-import Consent from "./pages/Consent";
-import AccessRequestsPage from "./pages/AccessRequestsPage";
-import Documents from "./pages/Documents";
-import Transactions from "./pages/Transactions";
+import StudentDashboard from "./pages/StudentDashboard.tsx";
 
 let supportedWallets: SupportedWallet[];
 if (import.meta.env.VITE_ALGOD_NETWORK === "localnet") {
@@ -61,13 +56,7 @@ export default function App() {
 
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/dashboard" element={<StudentDashboard />}>
-            <Route index element={<DashboardHome />} />
-            <Route path="consent" element={<Consent />} />
-            <Route path="access-requests" element={<AccessRequestsPage />} />
-            <Route path="documents" element={<Documents />} />
-            <Route path="transactions" element={<Transactions />} />
-          </Route>
+          <Route path="/dashboard" element={<StudentDashboard />} />
         </Routes>
       </WalletProvider>
     </SnackbarProvider>

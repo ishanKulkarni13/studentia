@@ -5,12 +5,12 @@ import { getAlgodConfigFromViteEnvironment, getKmdConfigFromViteEnvironment } fr
 import { Routes, Route } from "react-router-dom";
 
 // pages
-import StudentDashboard from "./pages/StudentDashboard";
-import DashboardHome from "./pages/DashboardHome";
-import Consent from "./pages/Consent";
-import AccessRequestsPage from "./pages/AccessRequestsPage";
-import Documents from "./pages/Documents";
-import Transactions from "./pages/Transactions";
+import StudentDashboard from "./pages/StudentDashboard.tsx";
+import DashboardHome from "./pages/DashboardHome.tsx";
+import Consent from "./pages/Consent.tsx";
+import AccessRequestsPage from "./pages/AccessRequestsPage.tsx";
+import Documents from "./pages/Documents.tsx";
+import Transactions from "./pages/Transactions.tsx";
 
 let supportedWallets: SupportedWallet[];
 if (import.meta.env.VITE_ALGOD_NETWORK === "localnet") {
