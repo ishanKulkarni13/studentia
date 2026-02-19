@@ -1,0 +1,54 @@
+import algosdk from 'algosdk'
+
+const appId = Number(process.env.APP_ID || 0)
+const algodServer = process.env.ALGOD_SERVER || ''
+const algodToken = process.env.ALGOD_TOKEN || ''
+const algodPort = Number(process.env.ALGOD_PORT || 443)
+const signerMnemonic = process.env.SIGNER_MNEMONIC || ''
+
+if (!appId) {
+  console.warn('APP_ID env not set')
+}
+
+const algod = new algosdk.Algodv2(algodToken, algodServer, algodPort)
+
+function getAccount() {
+  if (!signerMnemonic) throw new Error('SIGNER_MNEMONIC missing')
+  return algosdk.mnemonicToSecretKey(signerMnemonic)
+}
+
+function method(name: string) {
+  return new algosdk.ABIMethod({
+    name,
+    args: [
+      { name: 'student_id', type: 'string' },
+      { name: 'receiver_group', type: 'string' },
+      { name: 'data_group', type: 'string' },
+    ],
+    returns: { type: 'string' },
+  })
+}
+
+export async function callConsent(
+  action: 'grant' | 'revoke',
+  args: { studentId: string; receiverGroup: string; dataGroup: string }
+) {
+  if (!appId) throw new Error('APP_ID env not set')
+  const acct = getAccount()
+  const suggested = await algod.getTransactionParams().do()
+  suggested.flatFee = true
+  suggested.fee = 1000
+  const atc = new algosdk.AtomicTransactionComposer()
+  atc.addMethodCall({
+    appID: appId,
+    method: method(action === 'grant' ? 'grant_consent' : 'revoke_consent'),
+    sender: acct.addr,
+    suggestedParams: suggested,
+    signer: algosdk.makeBasicAccountTransactionSigner(acct),
+    methodArgs: [args.studentId, args.receiverGroup, args.dataGroup],
+  })
+  const result = await atc.execute(algod, 3)
+  const txId = result.txIDs[0]
+  const returnValue = result.methodResults[0]?.returnValue as string | undefined
+  return { txId, returnValue }
+}
