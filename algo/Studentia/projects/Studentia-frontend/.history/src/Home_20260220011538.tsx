@@ -4,7 +4,6 @@ import React, { useMemo, useState } from "react";
 import ConnectWallet from "./components/ConnectWallet";
 import Transact from "./components/Transact";
 import AppCalls from "./components/AppCalls";
-import AccessRequests from "./components/AccessRequests";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 
@@ -14,7 +13,6 @@ const Home: React.FC<HomeProps> = () => {
   const [openWalletModal, setOpenWalletModal] = useState<boolean>(false);
   const [openDemoModal, setOpenDemoModal] = useState<boolean>(false);
   const [appCallsDemoModal, setAppCallsDemoModal] = useState<boolean>(false);
-  const [accessRequestsModal, setAccessRequestsModal] = useState<boolean>(false);
   const { activeAddress } = useWallet();
   const appId = useMemo(() => import.meta.env.VITE_APP_ID ?? "Set VITE_APP_ID", []);
   const hasApiBase = useMemo(() => Boolean(import.meta.env.VITE_API_BASE), []);
@@ -29,10 +27,6 @@ const Home: React.FC<HomeProps> = () => {
 
   const toggleAppCallsModal = () => {
     setAppCallsDemoModal(!appCallsDemoModal);
-  };
-
-  const toggleAccessRequestsModal = () => {
-    setAccessRequestsModal(!accessRequestsModal);
   };
 
   return (
@@ -65,10 +59,6 @@ const Home: React.FC<HomeProps> = () => {
               Consent: Grant / Revoke
             </button>
 
-            <button data-test-id="access-requests-demo" className={`btn ${!hasApiBase ? "btn-disabled" : ""}`} onClick={toggleAccessRequestsModal}>
-              Access Requests (test)
-            </button>
-
             <button data-test-id="transactions-demo" className={`btn ${!activeAddress ? "btn-disabled" : ""}`} onClick={toggleDemoModal}>
               Send 1 Algo (test)
             </button>
@@ -86,7 +76,6 @@ const Home: React.FC<HomeProps> = () => {
           <ConnectWallet openModal={openWalletModal} closeModal={toggleWalletModal} />
           <Transact openModal={openDemoModal} setModalState={setOpenDemoModal} />
           <AppCalls openModal={appCallsDemoModal} setModalState={setAppCallsDemoModal} />
-          <AccessRequests openModal={accessRequestsModal} setModalState={setAccessRequestsModal} />
         </div>
       </div>
       <div className="flex min-h-svh flex-col items-center justify-center">

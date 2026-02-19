@@ -15,7 +15,6 @@ import bearer from 'passport-http-bearer'
 import passport from 'passport'
 import { consentsRouter } from './routes/consents.js'
 import { documentsRouter } from './routes/documents.js'
-import { accessRequestsRouter } from './routes/accessRequests.js'
 import { connectMongo } from './utils/db.js'
 
 dotenv.config()
@@ -30,7 +29,6 @@ const maybeAuth = (_req: any, _res: any, next: any) => next()
 app.get('/health', (_req, res) => res.json({ ok: true }))
 app.use('/consents', maybeAuth, consentsRouter)
 app.use('/documents', maybeAuth, documentsRouter)
-app.use('/access-requests', maybeAuth, accessRequestsRouter)
 
 const port = Number(process.env.API_PORT || 3000)
 
