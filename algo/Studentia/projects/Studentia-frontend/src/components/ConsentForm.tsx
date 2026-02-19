@@ -1,6 +1,6 @@
 import { useWallet } from "@txnlab/use-wallet-react";
 import { useSnackbar } from "notistack";
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import algosdk from "algosdk";
 import { getAlgodConfigFromViteEnvironment } from "../utils/network/getAlgoClientConfigs";
 import { AlgorandClient } from "@algorandfoundation/algokit-utils";
@@ -12,17 +12,29 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { ExternalLink, RefreshCw, CheckCircle, XCircle, AlertCircle, Shield } from "lucide-react";
+import { useConsentStore } from "@/stores/consentStore";
 
 const ConsentForm = () => {
-  const [loading, setLoading] = useState<boolean>(false);
-  const [studentId, setStudentId] = useState<string>("student-001");
-  const [dataGroup, setDataGroup] = useState<string>("Academic");
-  const [dataGroupCustom, setDataGroupCustom] = useState<string>("");
-  const [receiverGroup, setReceiverGroup] = useState<string>("College");
-  const [receiverGroupCustom, setReceiverGroupCustom] = useState<string>("");
-  const [logs, setLogs] = useState<{ status: "Granted" | "Revoked"; receiver: string; data: string; txId: string }[]>([]);
-  const [records, setRecords] = useState<{ status: string; receiver: string; data: string; txId: string }[]>([]);
-  const [onChainStatuses, setOnChainStatuses] = useState<{ status: string; receiver: string; data: string; boxKey: string }[]>([]);
+  const {
+    loading,
+    setLoading,
+    studentId,
+    setStudentId,
+    dataGroup,
+    setDataGroup,
+    dataGroupCustom,
+    setDataGroupCustom,
+    receiverGroup,
+    setReceiverGroup,
+    receiverGroupCustom,
+    setReceiverGroupCustom,
+    logs,
+    addTransactionLog,
+    records,
+    setRecords,
+    onChainStatuses,
+    setOnChainStatuses,
+  } = useConsentStore();
   const apiBase = useMemo(() => import.meta.env.VITE_API_BASE as string | undefined, []);
   const { enqueueSnackbar } = useSnackbar();
   const { transactionSigner, activeAddress } = useWallet();
@@ -136,15 +148,12 @@ const ConsentForm = () => {
         if (!resp.ok) throw new Error(data.error || "Backend error");
         const txId = data.txId as string;
         enqueueSnackbar(`Txn sent: ${txId}`, { variant: "success" });
-        setLogs((prev) => [
-          {
-            status: action === "grant" ? "Granted" : "Revoked",
-            receiver: receiverGroupValue,
-            data: dataGroupValue,
-            txId,
-          },
-          ...prev,
-        ]);
+        addTransactionLog({
+          status: action === "grant" ? "Granted" : "Revoked",
+          receiver: receiverGroupValue,
+          data: dataGroupValue,
+          txId,
+        });
         if (data.returnValue) enqueueSnackbar(`Contract returned: ${data.returnValue}`, { variant: "info" });
         await refreshStatus(studentId.trim());
       } else {
@@ -180,15 +189,12 @@ const ConsentForm = () => {
         const txId = result.txIDs[0];
         const returnValue = result.methodResults[0]?.returnValue as string | undefined;
         enqueueSnackbar(`Txn sent: ${txId}`, { variant: "success" });
-        setLogs((prev) => [
-          {
-            status: action === "grant" ? "Granted" : "Revoked",
-            receiver: receiverGroupValue,
-            data: dataGroupValue,
-            txId,
-          },
-          ...prev,
-        ]);
+        addTransactionLog({
+          status: action === "grant" ? "Granted" : "Revoked",
+          receiver: receiverGroupValue,
+          data: dataGroupValue,
+          txId,
+        });
         if (returnValue) enqueueSnackbar(`Contract returned: ${returnValue}`, { variant: "info" });
       }
     } catch (e: unknown) {

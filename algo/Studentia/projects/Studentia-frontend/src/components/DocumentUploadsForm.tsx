@@ -1,23 +1,38 @@
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { useSnackbar } from "notistack";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-
-type DocMeta = {
-  id: string;
-  studentId: string;
-  receiverGroup: string;
-  dataGroup: string;
-  fileName: string;
-  mimeType: string;
-  sizeBytes: number;
-  storageMode: string;
-  sharedWith: string[];
-  createdAt?: string;
-};
+import { useDocumentsStore, DocMeta } from "@/stores/documentsStore";
 
 const DocumentUploadsForm = () => {
+  const {
+    studentId,
+    setStudentId,
+    receiverGroup,
+    setReceiverGroup,
+    dataGroup,
+    setDataGroup,
+    selectedFileName,
+    setSelectedFileName,
+    selectedMimeType,
+    setSelectedMimeType,
+    selectedFile,
+    setSelectedFile,
+    docId,
+    setDocId,
+    downloadOwnerId,
+    setDownloadOwnerId,
+    downloadRequesterGroup,
+    setDownloadRequesterGroup,
+    documents,
+    setDocuments,
+    downloadPreview,
+    setDownloadPreview,
+    loading,
+    setLoading,
+  } = useDocumentsStore();
+
   const apiBase = useMemo(() => {
     const raw = import.meta.env.VITE_API_BASE as string | undefined;
     if (!raw) return undefined;
@@ -26,22 +41,6 @@ const DocumentUploadsForm = () => {
   const apiToken = useMemo(() => import.meta.env.VITE_API_TOKEN as string | undefined, []);
   const documentBaseCandidates = useMemo(() => (apiBase ? [`${apiBase}/documents`, `${apiBase}/api/documents`] : []), [apiBase]);
   const { enqueueSnackbar } = useSnackbar();
-
-  const [studentId, setStudentId] = useState("student-001");
-  const [receiverGroup, setReceiverGroup] = useState("Recruiters");
-  const [dataGroup, setDataGroup] = useState("Portfolio");
-
-  const [selectedFileName, setSelectedFileName] = useState("");
-  const [selectedMimeType, setSelectedMimeType] = useState("application/octet-stream");
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
-
-  const [docId, setDocId] = useState("");
-  const [downloadOwnerId, setDownloadOwnerId] = useState("student-001");
-  const [downloadRequesterGroup, setDownloadRequesterGroup] = useState("Recruiters");
-
-  const [documents, setDocuments] = useState<DocMeta[]>([]);
-  const [downloadPreview, setDownloadPreview] = useState("");
-  const [loading, setLoading] = useState(false);
 
   const headers = (withJson = true) => ({
     ...(withJson ? { "Content-Type": "application/json" } : {}),

@@ -1,6 +1,6 @@
 // src/components/Home.tsx
 import { useWallet } from "@txnlab/use-wallet-react";
-import React, { useMemo, useState } from "react";
+import React, { useMemo } from "react";
 import ConnectWallet from "./components/ConnectWallet";
 import Transact from "./components/Transact";
 import AppCalls from "./components/AppCalls";
@@ -8,25 +8,34 @@ import AccessRequests from "./components/AccessRequests";
 import DocumentUploads from "./components/DocumentUploads";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
+import { useUIStore } from "@/stores/uiStore";
 
 interface HomeProps {}
 
 const Home: React.FC<HomeProps> = () => {
-  const [openWalletModal, setOpenWalletModal] = useState<boolean>(false);
-  const [openDemoModal, setOpenDemoModal] = useState<boolean>(false);
-  const [appCallsDemoModal, setAppCallsDemoModal] = useState<boolean>(false);
-  const [accessRequestsModal, setAccessRequestsModal] = useState<boolean>(false);
-  const [documentsModal, setDocumentsModal] = useState<boolean>(false);
+  const {
+    openWalletModal,
+    setWalletModal,
+    openDemoModal,
+    setDemoModal,
+    appCallsDemoModal,
+    setAppCallsDemoModal,
+    accessRequestsModal,
+    setAccessRequestsModal,
+    documentsModal,
+    setDocumentsModal,
+  } = useUIStore();
+
   const { activeAddress } = useWallet();
   const appId = useMemo(() => import.meta.env.VITE_APP_ID ?? "Set VITE_APP_ID", []);
   const hasApiBase = useMemo(() => Boolean(import.meta.env.VITE_API_BASE), []);
 
   const toggleWalletModal = () => {
-    setOpenWalletModal(!openWalletModal);
+    setWalletModal(!openWalletModal);
   };
 
   const toggleDemoModal = () => {
-    setOpenDemoModal(!openDemoModal);
+    setDemoModal(!openDemoModal);
   };
 
   const toggleAppCallsModal = () => {
@@ -97,9 +106,6 @@ const Home: React.FC<HomeProps> = () => {
               <button className="btn btn-secondary">Go to Dashboard</button>
             </Link>
         </div>
-      </div>
-      <div className="flex min-h-svh flex-col items-center justify-center">
-        <Button>Click me</Button>
       </div>
     </div>
   );
