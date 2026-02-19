@@ -24,7 +24,7 @@ import { SendParams, SendSingleTransactionResult, SendAtomicTransactionComposerR
 import { Address, encodeAddress, modelsv2, OnApplicationComplete, Transaction, TransactionSigner } from 'algosdk'
 import SimulateResponse = modelsv2.SimulateResponse
 
-export const APP_SPEC: Arc56Contract = {"name":"ConsentApp","structs":{},"methods":[{"name":"grant_consent","args":[{"type":"string","name":"student_id"},{"type":"string","name":"receiver_group"},{"type":"string","name":"data_group"}],"returns":{"type":"string"},"actions":{"create":[],"call":["NoOp"]},"readonly":false,"desc":"Record a grant event; keep payload minimal for audit only.","events":[],"recommendations":{}},{"name":"revoke_consent","args":[{"type":"string","name":"student_id"},{"type":"string","name":"receiver_group"},{"type":"string","name":"data_group"}],"returns":{"type":"string"},"actions":{"create":[],"call":["NoOp"]},"readonly":false,"desc":"Record a revoke event; keep payload minimal for audit only.","events":[],"recommendations":{}}],"arcs":[22,28],"networks":{},"state":{"schema":{"global":{"ints":0,"bytes":0},"local":{"ints":0,"bytes":0}},"keys":{"global":{},"local":{},"box":{}},"maps":{"global":{},"local":{},"box":{}}},"bareActions":{"create":["NoOp"],"call":[]},"sourceInfo":{"approval":{"sourceInfo":[{"pc":[62,78,94,146,162,178],"errorMessage":"invalid array length header"},{"pc":[69,85,101,153,169,185],"errorMessage":"invalid number of bytes for arc4.dynamic_array<arc4.uint8>"}],"pcOffsetMethod":"none"},"clear":{"sourceInfo":[],"pcOffsetMethod":"none"}},"source":{"approval":"I3ByYWdtYSB2ZXJzaW9uIDExCiNwcmFnbWEgdHlwZXRyYWNrIGZhbHNlCgovLyBhbGdvcHkuYXJjNC5BUkM0Q29udHJhY3QuYXBwcm92YWxfcHJvZ3JhbSgpIC0+IHVpbnQ2NDoKbWFpbjoKICAgIGludGNibG9jayAwIDIgMQogICAgYnl0ZWNibG9jayAiOiIgMHgxNTFmN2M3NQogICAgLy8gc21hcnRfY29udHJhY3RzL2NvbnNlbnRfYXBwL2NvbnRyYWN0LnB5OjUKICAgIC8vIGNsYXNzIENvbnNlbnRBcHAoQVJDNENvbnRyYWN0KToKICAgIHR4biBOdW1BcHBBcmdzCiAgICBieiBtYWluX19fYWxnb3B5X2RlZmF1bHRfY3JlYXRlQDkKICAgIHR4biBPbkNvbXBsZXRpb24KICAgICEKICAgIGFzc2VydAogICAgdHhuIEFwcGxpY2F0aW9uSUQKICAgIGFzc2VydAogICAgcHVzaGJ5dGVzcyAweDViYzY4MzI2IDB4ZmYyYWZjNDMgLy8gbWV0aG9kICJncmFudF9jb25zZW50KHN0cmluZyxzdHJpbmcsc3RyaW5nKXN0cmluZyIsIG1ldGhvZCAicmV2b2tlX2NvbnNlbnQoc3RyaW5nLHN0cmluZyxzdHJpbmcpc3RyaW5nIgogICAgdHhuYSBBcHBsaWNhdGlvbkFyZ3MgMAogICAgbWF0Y2ggZ3JhbnRfY29uc2VudCByZXZva2VfY29uc2VudAogICAgZXJyCgptYWluX19fYWxnb3B5X2RlZmF1bHRfY3JlYXRlQDk6CiAgICB0eG4gT25Db21wbGV0aW9uCiAgICAhCiAgICB0eG4gQXBwbGljYXRpb25JRAogICAgIQogICAgJiYKICAgIHJldHVybgoKCi8vIHNtYXJ0X2NvbnRyYWN0cy5jb25zZW50X2FwcC5jb250cmFjdC5Db25zZW50QXBwLmdyYW50X2NvbnNlbnRbcm91dGluZ10oKSAtPiB2b2lkOgpncmFudF9jb25zZW50OgogICAgLy8gc21hcnRfY29udHJhY3RzL2NvbnNlbnRfYXBwL2NvbnRyYWN0LnB5OjYKICAgIC8vIEBhYmltZXRob2QoKQogICAgdHhuYSBBcHBsaWNhdGlvbkFyZ3MgMQogICAgZHVwCiAgICBpbnRjXzAgLy8gMAogICAgZXh0cmFjdF91aW50MTYgLy8gb24gZXJyb3I6IGludmFsaWQgYXJyYXkgbGVuZ3RoIGhlYWRlcgogICAgaW50Y18xIC8vIDIKICAgICsKICAgIGRpZyAxCiAgICBsZW4KICAgID09CiAgICBhc3NlcnQgLy8gaW52YWxpZCBudW1iZXIgb2YgYnl0ZXMgZm9yIGFyYzQuZHluYW1pY19hcnJheTxhcmM0LnVpbnQ4PgogICAgZXh0cmFjdCAyIDAKICAgIHR4bmEgQXBwbGljYXRpb25BcmdzIDIKICAgIGR1cAogICAgaW50Y18wIC8vIDAKICAgIGV4dHJhY3RfdWludDE2IC8vIG9uIGVycm9yOiBpbnZhbGlkIGFycmF5IGxlbmd0aCBoZWFkZXIKICAgIGludGNfMSAvLyAyCiAgICArCiAgICBkaWcgMQogICAgbGVuCiAgICA9PQogICAgYXNzZXJ0IC8vIGludmFsaWQgbnVtYmVyIG9mIGJ5dGVzIGZvciBhcmM0LmR5bmFtaWNfYXJyYXk8YXJjNC51aW50OD4KICAgIGV4dHJhY3QgMiAwCiAgICB0eG5hIEFwcGxpY2F0aW9uQXJncyAzCiAgICBkdXAKICAgIGludGNfMCAvLyAwCiAgICBleHRyYWN0X3VpbnQxNiAvLyBvbiBlcnJvcjogaW52YWxpZCBhcnJheSBsZW5ndGggaGVhZGVyCiAgICBpbnRjXzEgLy8gMgogICAgKwogICAgZGlnIDEKICAgIGxlbgogICAgPT0KICAgIGFzc2VydCAvLyBpbnZhbGlkIG51bWJlciBvZiBieXRlcyBmb3IgYXJjNC5keW5hbWljX2FycmF5PGFyYzQudWludDg+CiAgICBleHRyYWN0IDIgMAogICAgLy8gc21hcnRfY29udHJhY3RzL2NvbnNlbnRfYXBwL2NvbnRyYWN0LnB5OjkKICAgIC8vIHJldHVybiAiR1JBTlRFRDoiICsgc3R1ZGVudF9pZCArICI6IiArIHJlY2VpdmVyX2dyb3VwICsgIjoiICsgZGF0YV9ncm91cAogICAgcHVzaGJ5dGVzICJHUkFOVEVEOiIKICAgIHVuY292ZXIgMwogICAgY29uY2F0CiAgICBieXRlY18wIC8vICI6IgogICAgY29uY2F0CiAgICB1bmNvdmVyIDIKICAgIGNvbmNhdAogICAgYnl0ZWNfMCAvLyAiOiIKICAgIGNvbmNhdAogICAgc3dhcAogICAgY29uY2F0CiAgICAvLyBzbWFydF9jb250cmFjdHMvY29uc2VudF9hcHAvY29udHJhY3QucHk6NgogICAgLy8gQGFiaW1ldGhvZCgpCiAgICBkdXAKICAgIGxlbgogICAgaXRvYgogICAgZXh0cmFjdCA2IDIKICAgIHN3YXAKICAgIGNvbmNhdAogICAgYnl0ZWNfMSAvLyAweDE1MWY3Yzc1CiAgICBzd2FwCiAgICBjb25jYXQKICAgIGxvZwogICAgaW50Y18yIC8vIDEKICAgIHJldHVybgoKCi8vIHNtYXJ0X2NvbnRyYWN0cy5jb25zZW50X2FwcC5jb250cmFjdC5Db25zZW50QXBwLnJldm9rZV9jb25zZW50W3JvdXRpbmddKCkgLT4gdm9pZDoKcmV2b2tlX2NvbnNlbnQ6CiAgICAvLyBzbWFydF9jb250cmFjdHMvY29uc2VudF9hcHAvY29udHJhY3QucHk6MTEKICAgIC8vIEBhYmltZXRob2QoKQogICAgdHhuYSBBcHBsaWNhdGlvbkFyZ3MgMQogICAgZHVwCiAgICBpbnRjXzAgLy8gMAogICAgZXh0cmFjdF91aW50MTYgLy8gb24gZXJyb3I6IGludmFsaWQgYXJyYXkgbGVuZ3RoIGhlYWRlcgogICAgaW50Y18xIC8vIDIKICAgICsKICAgIGRpZyAxCiAgICBsZW4KICAgID09CiAgICBhc3NlcnQgLy8gaW52YWxpZCBudW1iZXIgb2YgYnl0ZXMgZm9yIGFyYzQuZHluYW1pY19hcnJheTxhcmM0LnVpbnQ4PgogICAgZXh0cmFjdCAyIDAKICAgIHR4bmEgQXBwbGljYXRpb25BcmdzIDIKICAgIGR1cAogICAgaW50Y18wIC8vIDAKICAgIGV4dHJhY3RfdWludDE2IC8vIG9uIGVycm9yOiBpbnZhbGlkIGFycmF5IGxlbmd0aCBoZWFkZXIKICAgIGludGNfMSAvLyAyCiAgICArCiAgICBkaWcgMQogICAgbGVuCiAgICA9PQogICAgYXNzZXJ0IC8vIGludmFsaWQgbnVtYmVyIG9mIGJ5dGVzIGZvciBhcmM0LmR5bmFtaWNfYXJyYXk8YXJjNC51aW50OD4KICAgIGV4dHJhY3QgMiAwCiAgICB0eG5hIEFwcGxpY2F0aW9uQXJncyAzCiAgICBkdXAKICAgIGludGNfMCAvLyAwCiAgICBleHRyYWN0X3VpbnQxNiAvLyBvbiBlcnJvcjogaW52YWxpZCBhcnJheSBsZW5ndGggaGVhZGVyCiAgICBpbnRjXzEgLy8gMgogICAgKwogICAgZGlnIDEKICAgIGxlbgogICAgPT0KICAgIGFzc2VydCAvLyBpbnZhbGlkIG51bWJlciBvZiBieXRlcyBmb3IgYXJjNC5keW5hbWljX2FycmF5PGFyYzQudWludDg+CiAgICBleHRyYWN0IDIgMAogICAgLy8gc21hcnRfY29udHJhY3RzL2NvbnNlbnRfYXBwL2NvbnRyYWN0LnB5OjE0CiAgICAvLyByZXR1cm4gIlJFVk9LRUQ6IiArIHN0dWRlbnRfaWQgKyAiOiIgKyByZWNlaXZlcl9ncm91cCArICI6IiArIGRhdGFfZ3JvdXAKICAgIHB1c2hieXRlcyAiUkVWT0tFRDoiCiAgICB1bmNvdmVyIDMKICAgIGNvbmNhdAogICAgYnl0ZWNfMCAvLyAiOiIKICAgIGNvbmNhdAogICAgdW5jb3ZlciAyCiAgICBjb25jYXQKICAgIGJ5dGVjXzAgLy8gIjoiCiAgICBjb25jYXQKICAgIHN3YXAKICAgIGNvbmNhdAogICAgLy8gc21hcnRfY29udHJhY3RzL2NvbnNlbnRfYXBwL2NvbnRyYWN0LnB5OjExCiAgICAvLyBAYWJpbWV0aG9kKCkKICAgIGR1cAogICAgbGVuCiAgICBpdG9iCiAgICBleHRyYWN0IDYgMgogICAgc3dhcAogICAgY29uY2F0CiAgICBieXRlY18xIC8vIDB4MTUxZjdjNzUKICAgIHN3YXAKICAgIGNvbmNhdAogICAgbG9nCiAgICBpbnRjXzIgLy8gMQogICAgcmV0dXJuCg==","clear":"I3ByYWdtYSB2ZXJzaW9uIDExCiNwcmFnbWEgdHlwZXRyYWNrIGZhbHNlCgovLyBhbGdvcHkuYXJjNC5BUkM0Q29udHJhY3QuY2xlYXJfc3RhdGVfcHJvZ3JhbSgpIC0+IHVpbnQ2NDoKbWFpbjoKICAgIHB1c2hpbnQgMQogICAgcmV0dXJuCg=="},"byteCode":{"approval":"CyADAAIBJgIBOgQVH3x1MRtBAB0xGRREMRhEggIEW8aDJgT/KvxDNhoAjgIACQBdADEZFDEYFBBDNhoBSSJZIwhLARUSRFcCADYaAkkiWSMISwEVEkRXAgA2GgNJIlkjCEsBFRJEVwIAgAhHUkFOVEVEOk8DUChQTwJQKFBMUEkVFlcGAkxQKUxQsCRDNhoBSSJZIwhLARUSRFcCADYaAkkiWSMISwEVEkRXAgA2GgNJIlkjCEsBFRJEVwIAgAhSRVZPS0VEOk8DUChQTwJQKFBMUEkVFlcGAkxQKUxQsCRD","clear":"C4EBQw=="},"compilerInfo":{"compiler":"puya","compilerVersion":{"major":5,"minor":7,"patch":1}},"events":[],"templateVariables":{}} as unknown as Arc56Contract
+export const APP_SPEC: Arc56Contract = {"name":"ConsentApp","structs":{},"methods":[{"name":"grant_consent","args":[{"type":"string","name":"student_id"},{"type":"string","name":"receiver_group"},{"type":"string","name":"data_group"}],"returns":{"type":"string"},"actions":{"create":[],"call":["NoOp"]},"readonly":false,"events":[],"recommendations":{}},{"name":"revoke_consent","args":[{"type":"string","name":"student_id"},{"type":"string","name":"receiver_group"},{"type":"string","name":"data_group"}],"returns":{"type":"string"},"actions":{"create":[],"call":["NoOp"]},"readonly":false,"events":[],"recommendations":{}},{"name":"get_consent","args":[{"type":"string","name":"student_id"},{"type":"string","name":"receiver_group"},{"type":"string","name":"data_group"}],"returns":{"type":"string"},"actions":{"create":[],"call":["NoOp"]},"readonly":true,"events":[],"recommendations":{}}],"arcs":[22,28],"networks":{},"state":{"schema":{"global":{"ints":0,"bytes":0},"local":{"ints":0,"bytes":0}},"keys":{"global":{},"local":{},"box":{}},"maps":{"global":{},"local":{},"box":{}}},"bareActions":{"create":["NoOp"],"call":[]},"sourceInfo":{"approval":{"sourceInfo":[{"pc":[365],"errorMessage":"check Box exists"},{"pc":[88,104,120,183,199,215,278,294,310],"errorMessage":"invalid array length header"},{"pc":[95,111,127,190,206,222,285,301,317],"errorMessage":"invalid number of bytes for arc4.dynamic_array<arc4.uint8>"}],"pcOffsetMethod":"none"},"clear":{"sourceInfo":[],"pcOffsetMethod":"none"}},"source":{"approval":"I3ByYWdtYSB2ZXJzaW9uIDExCiNwcmFnbWEgdHlwZXRyYWNrIGZhbHNlCgovLyBhbGdvcHkuYXJjNC5BUkM0Q29udHJhY3QuYXBwcm92YWxfcHJvZ3JhbSgpIC0+IHVpbnQ2NDoKbWFpbjoKICAgIGludGNibG9jayAwIDIgMSA4CiAgICBieXRlY2Jsb2NrICI6IiAweDE1MWY3Yzc1ICJHUkFOVEVEOiIgIlJFVk9LRUQ6IgogICAgLy8gc21hcnRfY29udHJhY3RzL2NvbnNlbnRfYXBwL2NvbnRyYWN0LnB5OjUKICAgIC8vIGNsYXNzIENvbnNlbnRBcHAoQVJDNENvbnRyYWN0KToKICAgIHR4biBOdW1BcHBBcmdzCiAgICBieiBtYWluX19fYWxnb3B5X2RlZmF1bHRfY3JlYXRlQDEwCiAgICB0eG4gT25Db21wbGV0aW9uCiAgICAhCiAgICBhc3NlcnQKICAgIHR4biBBcHBsaWNhdGlvbklECiAgICBhc3NlcnQKICAgIHB1c2hieXRlc3MgMHg1YmM2ODMyNiAweGZmMmFmYzQzIDB4NDYyMTY2MDkgLy8gbWV0aG9kICJncmFudF9jb25zZW50KHN0cmluZyxzdHJpbmcsc3RyaW5nKXN0cmluZyIsIG1ldGhvZCAicmV2b2tlX2NvbnNlbnQoc3RyaW5nLHN0cmluZyxzdHJpbmcpc3RyaW5nIiwgbWV0aG9kICJnZXRfY29uc2VudChzdHJpbmcsc3RyaW5nLHN0cmluZylzdHJpbmciCiAgICB0eG5hIEFwcGxpY2F0aW9uQXJncyAwCiAgICBtYXRjaCBncmFudF9jb25zZW50IHJldm9rZV9jb25zZW50IGdldF9jb25zZW50CiAgICBlcnIKCm1haW5fX19hbGdvcHlfZGVmYXVsdF9jcmVhdGVAMTA6CiAgICB0eG4gT25Db21wbGV0aW9uCiAgICAhCiAgICB0eG4gQXBwbGljYXRpb25JRAogICAgIQogICAgJiYKICAgIHJldHVybgoKCi8vIHNtYXJ0X2NvbnRyYWN0cy5jb25zZW50X2FwcC5jb250cmFjdC5Db25zZW50QXBwLmdyYW50X2NvbnNlbnRbcm91dGluZ10oKSAtPiB2b2lkOgpncmFudF9jb25zZW50OgogICAgLy8gc21hcnRfY29udHJhY3RzL2NvbnNlbnRfYXBwL2NvbnRyYWN0LnB5OjE1CiAgICAvLyBAYWJpbWV0aG9kKCkKICAgIHR4bmEgQXBwbGljYXRpb25BcmdzIDEKICAgIGR1cAogICAgaW50Y18wIC8vIDAKICAgIGV4dHJhY3RfdWludDE2IC8vIG9uIGVycm9yOiBpbnZhbGlkIGFycmF5IGxlbmd0aCBoZWFkZXIKICAgIGludGNfMSAvLyAyCiAgICArCiAgICBkaWcgMQogICAgbGVuCiAgICA9PQogICAgYXNzZXJ0IC8vIGludmFsaWQgbnVtYmVyIG9mIGJ5dGVzIGZvciBhcmM0LmR5bmFtaWNfYXJyYXk8YXJjNC51aW50OD4KICAgIGV4dHJhY3QgMiAwCiAgICB0eG5hIEFwcGxpY2F0aW9uQXJncyAyCiAgICBkdXAKICAgIGludGNfMCAvLyAwCiAgICBleHRyYWN0X3VpbnQxNiAvLyBvbiBlcnJvcjogaW52YWxpZCBhcnJheSBsZW5ndGggaGVhZGVyCiAgICBpbnRjXzEgLy8gMgogICAgKwogICAgZGlnIDEKICAgIGxlbgogICAgPT0KICAgIGFzc2VydCAvLyBpbnZhbGlkIG51bWJlciBvZiBieXRlcyBmb3IgYXJjNC5keW5hbWljX2FycmF5PGFyYzQudWludDg+CiAgICBleHRyYWN0IDIgMAogICAgdHhuYSBBcHBsaWNhdGlvbkFyZ3MgMwogICAgZHVwCiAgICBpbnRjXzAgLy8gMAogICAgZXh0cmFjdF91aW50MTYgLy8gb24gZXJyb3I6IGludmFsaWQgYXJyYXkgbGVuZ3RoIGhlYWRlcgogICAgaW50Y18xIC8vIDIKICAgICsKICAgIGRpZyAxCiAgICBsZW4KICAgID09CiAgICBhc3NlcnQgLy8gaW52YWxpZCBudW1iZXIgb2YgYnl0ZXMgZm9yIGFyYzQuZHluYW1pY19hcnJheTxhcmM0LnVpbnQ4PgogICAgZXh0cmFjdCAyIDAKICAgIC8vIHNtYXJ0X2NvbnRyYWN0cy9jb25zZW50X2FwcC9jb250cmFjdC5weTo5CiAgICAvLyByZXR1cm4gc3R1ZGVudF9pZCArICI6IiArIHJlY2VpdmVyX2dyb3VwICsgIjoiICsgZGF0YV9ncm91cAogICAgdW5jb3ZlciAyCiAgICBieXRlY18wIC8vICI6IgogICAgY29uY2F0CiAgICB1bmNvdmVyIDIKICAgIGNvbmNhdAogICAgYnl0ZWNfMCAvLyAiOiIKICAgIGNvbmNhdAogICAgc3dhcAogICAgY29uY2F0CiAgICBkdXAKICAgIC8vIHNtYXJ0X2NvbnRyYWN0cy9jb25zZW50X2FwcC9jb250cmFjdC5weToxOQogICAgLy8gaWYgbm90IGNvbnNlbnRfYm94OgogICAgYm94X2xlbgogICAgYnVyeSAxCiAgICBibnogZ3JhbnRfY29uc2VudF9hZnRlcl9pZl9lbHNlQDMKICAgIC8vIHNtYXJ0X2NvbnRyYWN0cy9jb25zZW50X2FwcC9jb250cmFjdC5weToyMAogICAgLy8gY29uc2VudF9ib3guY3JlYXRlKCkKICAgIGR1cAogICAgaW50Y18zIC8vIDgKICAgIGJveF9jcmVhdGUKICAgIHBvcAoKZ3JhbnRfY29uc2VudF9hZnRlcl9pZl9lbHNlQDM6CiAgICAvLyBzbWFydF9jb250cmFjdHMvY29uc2VudF9hcHAvY29udHJhY3QucHk6MjEKICAgIC8vIGNvbnNlbnRfYm94LnZhbHVlID0gVUludDY0KDEpCiAgICBpbnRjXzIgLy8gMQogICAgaXRvYgogICAgZGlnIDEKICAgIGR1cAogICAgdW5jb3ZlciAyCiAgICBib3hfcHV0CiAgICAvLyBzbWFydF9jb250cmFjdHMvY29uc2VudF9hcHAvY29udHJhY3QucHk6MjIKICAgIC8vIHJldHVybiAiR1JBTlRFRDoiICsga2V5CiAgICBieXRlY18yIC8vICJHUkFOVEVEOiIKICAgIHN3YXAKICAgIGNvbmNhdAogICAgLy8gc21hcnRfY29udHJhY3RzL2NvbnNlbnRfYXBwL2NvbnRyYWN0LnB5OjE1CiAgICAvLyBAYWJpbWV0aG9kKCkKICAgIGR1cAogICAgbGVuCiAgICBpdG9iCiAgICBleHRyYWN0IDYgMgogICAgc3dhcAogICAgY29uY2F0CiAgICBieXRlY18xIC8vIDB4MTUxZjdjNzUKICAgIHN3YXAKICAgIGNvbmNhdAogICAgbG9nCiAgICBpbnRjXzIgLy8gMQogICAgcmV0dXJuCgoKLy8gc21hcnRfY29udHJhY3RzLmNvbnNlbnRfYXBwLmNvbnRyYWN0LkNvbnNlbnRBcHAucmV2b2tlX2NvbnNlbnRbcm91dGluZ10oKSAtPiB2b2lkOgpyZXZva2VfY29uc2VudDoKICAgIC8vIHNtYXJ0X2NvbnRyYWN0cy9jb25zZW50X2FwcC9jb250cmFjdC5weToyNAogICAgLy8gQGFiaW1ldGhvZCgpCiAgICB0eG5hIEFwcGxpY2F0aW9uQXJncyAxCiAgICBkdXAKICAgIGludGNfMCAvLyAwCiAgICBleHRyYWN0X3VpbnQxNiAvLyBvbiBlcnJvcjogaW52YWxpZCBhcnJheSBsZW5ndGggaGVhZGVyCiAgICBpbnRjXzEgLy8gMgogICAgKwogICAgZGlnIDEKICAgIGxlbgogICAgPT0KICAgIGFzc2VydCAvLyBpbnZhbGlkIG51bWJlciBvZiBieXRlcyBmb3IgYXJjNC5keW5hbWljX2FycmF5PGFyYzQudWludDg+CiAgICBleHRyYWN0IDIgMAogICAgdHhuYSBBcHBsaWNhdGlvbkFyZ3MgMgogICAgZHVwCiAgICBpbnRjXzAgLy8gMAogICAgZXh0cmFjdF91aW50MTYgLy8gb24gZXJyb3I6IGludmFsaWQgYXJyYXkgbGVuZ3RoIGhlYWRlcgogICAgaW50Y18xIC8vIDIKICAgICsKICAgIGRpZyAxCiAgICBsZW4KICAgID09CiAgICBhc3NlcnQgLy8gaW52YWxpZCBudW1iZXIgb2YgYnl0ZXMgZm9yIGFyYzQuZHluYW1pY19hcnJheTxhcmM0LnVpbnQ4PgogICAgZXh0cmFjdCAyIDAKICAgIHR4bmEgQXBwbGljYXRpb25BcmdzIDMKICAgIGR1cAogICAgaW50Y18wIC8vIDAKICAgIGV4dHJhY3RfdWludDE2IC8vIG9uIGVycm9yOiBpbnZhbGlkIGFycmF5IGxlbmd0aCBoZWFkZXIKICAgIGludGNfMSAvLyAyCiAgICArCiAgICBkaWcgMQogICAgbGVuCiAgICA9PQogICAgYXNzZXJ0IC8vIGludmFsaWQgbnVtYmVyIG9mIGJ5dGVzIGZvciBhcmM0LmR5bmFtaWNfYXJyYXk8YXJjNC51aW50OD4KICAgIGV4dHJhY3QgMiAwCiAgICAvLyBzbWFydF9jb250cmFjdHMvY29uc2VudF9hcHAvY29udHJhY3QucHk6OQogICAgLy8gcmV0dXJuIHN0dWRlbnRfaWQgKyAiOiIgKyByZWNlaXZlcl9ncm91cCArICI6IiArIGRhdGFfZ3JvdXAKICAgIHVuY292ZXIgMgogICAgYnl0ZWNfMCAvLyAiOiIKICAgIGNvbmNhdAogICAgdW5jb3ZlciAyCiAgICBjb25jYXQKICAgIGJ5dGVjXzAgLy8gIjoiCiAgICBjb25jYXQKICAgIHN3YXAKICAgIGNvbmNhdAogICAgZHVwCiAgICAvLyBzbWFydF9jb250cmFjdHMvY29uc2VudF9hcHAvY29udHJhY3QucHk6MjgKICAgIC8vIGlmIG5vdCBjb25zZW50X2JveDoKICAgIGJveF9sZW4KICAgIGJ1cnkgMQogICAgYm56IHJldm9rZV9jb25zZW50X2FmdGVyX2lmX2Vsc2VAMwogICAgLy8gc21hcnRfY29udHJhY3RzL2NvbnNlbnRfYXBwL2NvbnRyYWN0LnB5OjI5CiAgICAvLyBjb25zZW50X2JveC5jcmVhdGUoKQogICAgZHVwCiAgICBpbnRjXzMgLy8gOAogICAgYm94X2NyZWF0ZQogICAgcG9wCgpyZXZva2VfY29uc2VudF9hZnRlcl9pZl9lbHNlQDM6CiAgICAvLyBzbWFydF9jb250cmFjdHMvY29uc2VudF9hcHAvY29udHJhY3QucHk6MzAKICAgIC8vIGNvbnNlbnRfYm94LnZhbHVlID0gVUludDY0KDApCiAgICBpbnRjXzAgLy8gMAogICAgaXRvYgogICAgZGlnIDEKICAgIGR1cAogICAgdW5jb3ZlciAyCiAgICBib3hfcHV0CiAgICAvLyBzbWFydF9jb250cmFjdHMvY29uc2VudF9hcHAvY29udHJhY3QucHk6MzEKICAgIC8vIHJldHVybiAiUkVWT0tFRDoiICsga2V5CiAgICBieXRlY18zIC8vICJSRVZPS0VEOiIKICAgIHN3YXAKICAgIGNvbmNhdAogICAgLy8gc21hcnRfY29udHJhY3RzL2NvbnNlbnRfYXBwL2NvbnRyYWN0LnB5OjI0CiAgICAvLyBAYWJpbWV0aG9kKCkKICAgIGR1cAogICAgbGVuCiAgICBpdG9iCiAgICBleHRyYWN0IDYgMgogICAgc3dhcAogICAgY29uY2F0CiAgICBieXRlY18xIC8vIDB4MTUxZjdjNzUKICAgIHN3YXAKICAgIGNvbmNhdAogICAgbG9nCiAgICBpbnRjXzIgLy8gMQogICAgcmV0dXJuCgoKLy8gc21hcnRfY29udHJhY3RzLmNvbnNlbnRfYXBwLmNvbnRyYWN0LkNvbnNlbnRBcHAuZ2V0X2NvbnNlbnRbcm91dGluZ10oKSAtPiB2b2lkOgpnZXRfY29uc2VudDoKICAgIC8vIHNtYXJ0X2NvbnRyYWN0cy9jb25zZW50X2FwcC9jb250cmFjdC5weTozMwogICAgLy8gQGFiaW1ldGhvZChyZWFkb25seT1UcnVlKQogICAgdHhuYSBBcHBsaWNhdGlvbkFyZ3MgMQogICAgZHVwCiAgICBpbnRjXzAgLy8gMAogICAgZXh0cmFjdF91aW50MTYgLy8gb24gZXJyb3I6IGludmFsaWQgYXJyYXkgbGVuZ3RoIGhlYWRlcgogICAgaW50Y18xIC8vIDIKICAgICsKICAgIGRpZyAxCiAgICBsZW4KICAgID09CiAgICBhc3NlcnQgLy8gaW52YWxpZCBudW1iZXIgb2YgYnl0ZXMgZm9yIGFyYzQuZHluYW1pY19hcnJheTxhcmM0LnVpbnQ4PgogICAgZXh0cmFjdCAyIDAKICAgIHR4bmEgQXBwbGljYXRpb25BcmdzIDIKICAgIGR1cAogICAgaW50Y18wIC8vIDAKICAgIGV4dHJhY3RfdWludDE2IC8vIG9uIGVycm9yOiBpbnZhbGlkIGFycmF5IGxlbmd0aCBoZWFkZXIKICAgIGludGNfMSAvLyAyCiAgICArCiAgICBkaWcgMQogICAgbGVuCiAgICA9PQogICAgYXNzZXJ0IC8vIGludmFsaWQgbnVtYmVyIG9mIGJ5dGVzIGZvciBhcmM0LmR5bmFtaWNfYXJyYXk8YXJjNC51aW50OD4KICAgIGV4dHJhY3QgMiAwCiAgICB0eG5hIEFwcGxpY2F0aW9uQXJncyAzCiAgICBkdXAKICAgIGludGNfMCAvLyAwCiAgICBleHRyYWN0X3VpbnQxNiAvLyBvbiBlcnJvcjogaW52YWxpZCBhcnJheSBsZW5ndGggaGVhZGVyCiAgICBpbnRjXzEgLy8gMgogICAgKwogICAgZGlnIDEKICAgIGxlbgogICAgPT0KICAgIGFzc2VydCAvLyBpbnZhbGlkIG51bWJlciBvZiBieXRlcyBmb3IgYXJjNC5keW5hbWljX2FycmF5PGFyYzQudWludDg+CiAgICBleHRyYWN0IDIgMAogICAgLy8gc21hcnRfY29udHJhY3RzL2NvbnNlbnRfYXBwL2NvbnRyYWN0LnB5OjkKICAgIC8vIHJldHVybiBzdHVkZW50X2lkICsgIjoiICsgcmVjZWl2ZXJfZ3JvdXAgKyAiOiIgKyBkYXRhX2dyb3VwCiAgICB1bmNvdmVyIDIKICAgIGJ5dGVjXzAgLy8gIjoiCiAgICBjb25jYXQKICAgIHVuY292ZXIgMgogICAgY29uY2F0CiAgICBieXRlY18wIC8vICI6IgogICAgY29uY2F0CiAgICBzd2FwCiAgICBjb25jYXQKICAgIGR1cAogICAgLy8gc21hcnRfY29udHJhY3RzL2NvbnNlbnRfYXBwL2NvbnRyYWN0LnB5OjM3CiAgICAvLyBpZiBub3QgY29uc2VudF9ib3g6CiAgICBib3hfbGVuCiAgICBidXJ5IDEKICAgIGJueiBnZXRfY29uc2VudF9hZnRlcl9pZl9lbHNlQDMKICAgIC8vIHNtYXJ0X2NvbnRyYWN0cy9jb25zZW50X2FwcC9jb250cmFjdC5weTozOAogICAgLy8gcmV0dXJuICJOT05FOiIgKyBrZXkKICAgIHB1c2hieXRlcyAiTk9ORToiCiAgICBkaWcgMQogICAgY29uY2F0CgpnZXRfY29uc2VudF9hZnRlcl9pbmxpbmVkX3NtYXJ0X2NvbnRyYWN0cy5jb25zZW50X2FwcC5jb250cmFjdC5Db25zZW50QXBwLmdldF9jb25zZW50QDc6CiAgICAvLyBzbWFydF9jb250cmFjdHMvY29uc2VudF9hcHAvY29udHJhY3QucHk6MzMKICAgIC8vIEBhYmltZXRob2QocmVhZG9ubHk9VHJ1ZSkKICAgIGR1cAogICAgbGVuCiAgICBpdG9iCiAgICBleHRyYWN0IDYgMgogICAgc3dhcAogICAgY29uY2F0CiAgICBieXRlY18xIC8vIDB4MTUxZjdjNzUKICAgIHN3YXAKICAgIGNvbmNhdAogICAgbG9nCiAgICBpbnRjXzIgLy8gMQogICAgcmV0dXJuCgpnZXRfY29uc2VudF9hZnRlcl9pZl9lbHNlQDM6CiAgICAvLyBzbWFydF9jb250cmFjdHMvY29uc2VudF9hcHAvY29udHJhY3QucHk6MzkKICAgIC8vIHN0YXR1cyA9IGNvbnNlbnRfYm94LnZhbHVlCiAgICBkdXAKICAgIGJveF9nZXQKICAgIGFzc2VydCAvLyBjaGVjayBCb3ggZXhpc3RzCiAgICBidG9pCiAgICAvLyBzbWFydF9jb250cmFjdHMvY29uc2VudF9hcHAvY29udHJhY3QucHk6NDAKICAgIC8vIHJldHVybiAoIkdSQU5URUQ6IiBpZiBzdGF0dXMgPT0gVUludDY0KDEpIGVsc2UgIlJFVk9LRUQ6IikgKyBrZXkKICAgIGludGNfMiAvLyAxCiAgICA9PQogICAgYnogZ2V0X2NvbnNlbnRfdGVybmFyeV9mYWxzZUA1CiAgICBieXRlY18yIC8vICJHUkFOVEVEOiIKCmdldF9jb25zZW50X3Rlcm5hcnlfbWVyZ2VANjoKICAgIC8vIHNtYXJ0X2NvbnRyYWN0cy9jb25zZW50X2FwcC9jb250cmFjdC5weTo0MAogICAgLy8gcmV0dXJuICgiR1JBTlRFRDoiIGlmIHN0YXR1cyA9PSBVSW50NjQoMSkgZWxzZSAiUkVWT0tFRDoiKSArIGtleQogICAgZGlnIDEKICAgIGNvbmNhdAogICAgLy8gc21hcnRfY29udHJhY3RzL2NvbnNlbnRfYXBwL2NvbnRyYWN0LnB5OjMzCiAgICAvLyBAYWJpbWV0aG9kKHJlYWRvbmx5PVRydWUpCiAgICBiIGdldF9jb25zZW50X2FmdGVyX2lubGluZWRfc21hcnRfY29udHJhY3RzLmNvbnNlbnRfYXBwLmNvbnRyYWN0LkNvbnNlbnRBcHAuZ2V0X2NvbnNlbnRANwoKZ2V0X2NvbnNlbnRfdGVybmFyeV9mYWxzZUA1OgogICAgLy8gc21hcnRfY29udHJhY3RzL2NvbnNlbnRfYXBwL2NvbnRyYWN0LnB5OjQwCiAgICAvLyByZXR1cm4gKCJHUkFOVEVEOiIgaWYgc3RhdHVzID09IFVJbnQ2NCgxKSBlbHNlICJSRVZPS0VEOiIpICsga2V5CiAgICBieXRlY18zIC8vICJSRVZPS0VEOiIKICAgIGIgZ2V0X2NvbnNlbnRfdGVybmFyeV9tZXJnZUA2Cg==","clear":"I3ByYWdtYSB2ZXJzaW9uIDExCiNwcmFnbWEgdHlwZXRyYWNrIGZhbHNlCgovLyBhbGdvcHkuYXJjNC5BUkM0Q29udHJhY3QuY2xlYXJfc3RhdGVfcHJvZ3JhbSgpIC0+IHVpbnQ2NDoKbWFpbjoKICAgIHB1c2hpbnQgMQogICAgcmV0dXJuCg=="},"byteCode":{"approval":"CyAEAAIBCCYEAToEFR98dQhHUkFOVEVEOghSRVZPS0VEOjEbQQAkMRkURDEYRIIDBFvGgyYE/yr8QwRGIWYJNhoAjgMACQBoAMcAMRkUMRgUEEM2GgFJIlkjCEsBFRJEVwIANhoCSSJZIwhLARUSRFcCADYaA0kiWSMISwEVEkRXAgBPAihQTwJQKFBMUEm9RQFAAARJJblIJBZLAUlPAr8qTFBJFRZXBgJMUClMULAkQzYaAUkiWSMISwEVEkRXAgA2GgJJIlkjCEsBFRJEVwIANhoDSSJZIwhLARUSRFcCAE8CKFBPAlAoUExQSb1FAUAABEkluUgiFksBSU8CvytMUEkVFlcGAkxQKUxQsCRDNhoBSSJZIwhLARUSRFcCADYaAkkiWSMISwEVEkRXAgA2GgNJIlkjCEsBFRJEVwIATwIoUE8CUChQTFBJvUUBQAAYgAVOT05FOksBUEkVFlcGAkxQKUxQsCRDSb5EFyQSQQAHKksBUEL/4itC//Y=","clear":"C4EBQw=="},"compilerInfo":{"compiler":"puya","compilerVersion":{"major":5,"minor":7,"patch":1}},"events":[],"templateVariables":{}} as unknown as Arc56Contract
 
 /**
  * A state record containing binary data
@@ -81,6 +81,11 @@ export type ConsentAppArgs = {
       receiverGroup: string
       dataGroup: string
     }
+    'get_consent(string,string,string)string': {
+      studentId: string
+      receiverGroup: string
+      dataGroup: string
+    }
   }
   /**
    * The tuple representation of the arguments for each method
@@ -88,6 +93,7 @@ export type ConsentAppArgs = {
   tuple: {
     'grant_consent(string,string,string)string': [studentId: string, receiverGroup: string, dataGroup: string]
     'revoke_consent(string,string,string)string': [studentId: string, receiverGroup: string, dataGroup: string]
+    'get_consent(string,string,string)string': [studentId: string, receiverGroup: string, dataGroup: string]
   }
 }
 
@@ -97,6 +103,7 @@ export type ConsentAppArgs = {
 export type ConsentAppReturns = {
   'grant_consent(string,string,string)string': string
   'revoke_consent(string,string,string)string': string
+  'get_consent(string,string,string)string': string
 }
 
 /**
@@ -116,6 +123,11 @@ export type ConsentAppTypes = {
       argsObj: ConsentAppArgs['obj']['revoke_consent(string,string,string)string']
       argsTuple: ConsentAppArgs['tuple']['revoke_consent(string,string,string)string']
       returns: ConsentAppReturns['revoke_consent(string,string,string)string']
+    }>
+    & Record<'get_consent(string,string,string)string' | 'get_consent', {
+      argsObj: ConsentAppArgs['obj']['get_consent(string,string,string)string']
+      argsTuple: ConsentAppArgs['tuple']['get_consent(string,string,string)string']
+      returns: ConsentAppReturns['get_consent(string,string,string)string']
     }>
 }
 
@@ -170,8 +182,6 @@ export abstract class ConsentAppParamsFactory {
   /**
    * Constructs a no op call for the grant_consent(string,string,string)string ABI method
    *
-   * Record a grant event; keep payload minimal for audit only.
-   *
    * @param params Parameters for the call
    * @returns An `AppClientMethodCallParams` object for the call
    */
@@ -185,8 +195,6 @@ export abstract class ConsentAppParamsFactory {
   /**
    * Constructs a no op call for the revoke_consent(string,string,string)string ABI method
    *
-   * Record a revoke event; keep payload minimal for audit only.
-   *
    * @param params Parameters for the call
    * @returns An `AppClientMethodCallParams` object for the call
    */
@@ -194,6 +202,19 @@ export abstract class ConsentAppParamsFactory {
     return {
       ...params,
       method: 'revoke_consent(string,string,string)string' as const,
+      args: Array.isArray(params.args) ? params.args : [params.args.studentId, params.args.receiverGroup, params.args.dataGroup],
+    }
+  }
+  /**
+   * Constructs a no op call for the get_consent(string,string,string)string ABI method
+   *
+   * @param params Parameters for the call
+   * @returns An `AppClientMethodCallParams` object for the call
+   */
+  static getConsent(params: CallParams<ConsentAppArgs['obj']['get_consent(string,string,string)string'] | ConsentAppArgs['tuple']['get_consent(string,string,string)string']> & CallOnComplete): AppClientMethodCallParams & CallOnComplete {
+    return {
+      ...params,
+      method: 'get_consent(string,string,string)string' as const,
       args: Array.isArray(params.args) ? params.args : [params.args.studentId, params.args.receiverGroup, params.args.dataGroup],
     }
   }
@@ -440,8 +461,6 @@ export class ConsentAppClient {
     /**
      * Makes a call to the ConsentApp smart contract using the `grant_consent(string,string,string)string` ABI method.
      *
-     * Record a grant event; keep payload minimal for audit only.
-     *
      * @param params The params for the smart contract call
      * @returns The call params
      */
@@ -452,13 +471,23 @@ export class ConsentAppClient {
     /**
      * Makes a call to the ConsentApp smart contract using the `revoke_consent(string,string,string)string` ABI method.
      *
-     * Record a revoke event; keep payload minimal for audit only.
-     *
      * @param params The params for the smart contract call
      * @returns The call params
      */
     revokeConsent: (params: CallParams<ConsentAppArgs['obj']['revoke_consent(string,string,string)string'] | ConsentAppArgs['tuple']['revoke_consent(string,string,string)string']> & {onComplete?: OnApplicationComplete.NoOpOC}) => {
       return this.appClient.params.call(ConsentAppParamsFactory.revokeConsent(params))
+    },
+
+    /**
+     * Makes a call to the ConsentApp smart contract using the `get_consent(string,string,string)string` ABI method.
+     * 
+     * This method is a readonly method; calling it with onComplete of NoOp will result in a simulated transaction rather than a real transaction.
+     *
+     * @param params The params for the smart contract call
+     * @returns The call params
+     */
+    getConsent: (params: CallParams<ConsentAppArgs['obj']['get_consent(string,string,string)string'] | ConsentAppArgs['tuple']['get_consent(string,string,string)string']> & {onComplete?: OnApplicationComplete.NoOpOC}) => {
+      return this.appClient.params.call(ConsentAppParamsFactory.getConsent(params))
     },
 
   }
@@ -480,8 +509,6 @@ export class ConsentAppClient {
     /**
      * Makes a call to the ConsentApp smart contract using the `grant_consent(string,string,string)string` ABI method.
      *
-     * Record a grant event; keep payload minimal for audit only.
-     *
      * @param params The params for the smart contract call
      * @returns The call transaction
      */
@@ -492,13 +519,23 @@ export class ConsentAppClient {
     /**
      * Makes a call to the ConsentApp smart contract using the `revoke_consent(string,string,string)string` ABI method.
      *
-     * Record a revoke event; keep payload minimal for audit only.
-     *
      * @param params The params for the smart contract call
      * @returns The call transaction
      */
     revokeConsent: (params: CallParams<ConsentAppArgs['obj']['revoke_consent(string,string,string)string'] | ConsentAppArgs['tuple']['revoke_consent(string,string,string)string']> & {onComplete?: OnApplicationComplete.NoOpOC}) => {
       return this.appClient.createTransaction.call(ConsentAppParamsFactory.revokeConsent(params))
+    },
+
+    /**
+     * Makes a call to the ConsentApp smart contract using the `get_consent(string,string,string)string` ABI method.
+     * 
+     * This method is a readonly method; calling it with onComplete of NoOp will result in a simulated transaction rather than a real transaction.
+     *
+     * @param params The params for the smart contract call
+     * @returns The call transaction
+     */
+    getConsent: (params: CallParams<ConsentAppArgs['obj']['get_consent(string,string,string)string'] | ConsentAppArgs['tuple']['get_consent(string,string,string)string']> & {onComplete?: OnApplicationComplete.NoOpOC}) => {
+      return this.appClient.createTransaction.call(ConsentAppParamsFactory.getConsent(params))
     },
 
   }
@@ -520,8 +557,6 @@ export class ConsentAppClient {
     /**
      * Makes a call to the ConsentApp smart contract using the `grant_consent(string,string,string)string` ABI method.
      *
-     * Record a grant event; keep payload minimal for audit only.
-     *
      * @param params The params for the smart contract call
      * @returns The call result
      */
@@ -533,14 +568,25 @@ export class ConsentAppClient {
     /**
      * Makes a call to the ConsentApp smart contract using the `revoke_consent(string,string,string)string` ABI method.
      *
-     * Record a revoke event; keep payload minimal for audit only.
-     *
      * @param params The params for the smart contract call
      * @returns The call result
      */
     revokeConsent: async (params: CallParams<ConsentAppArgs['obj']['revoke_consent(string,string,string)string'] | ConsentAppArgs['tuple']['revoke_consent(string,string,string)string']> & SendParams & {onComplete?: OnApplicationComplete.NoOpOC}) => {
       const result = await this.appClient.send.call(ConsentAppParamsFactory.revokeConsent(params))
       return {...result, return: result.return as unknown as (undefined | ConsentAppReturns['revoke_consent(string,string,string)string'])}
+    },
+
+    /**
+     * Makes a call to the ConsentApp smart contract using the `get_consent(string,string,string)string` ABI method.
+     * 
+     * This method is a readonly method; calling it with onComplete of NoOp will result in a simulated transaction rather than a real transaction.
+     *
+     * @param params The params for the smart contract call
+     * @returns The call result
+     */
+    getConsent: async (params: CallParams<ConsentAppArgs['obj']['get_consent(string,string,string)string'] | ConsentAppArgs['tuple']['get_consent(string,string,string)string']> & SendParams & {onComplete?: OnApplicationComplete.NoOpOC}) => {
+      const result = await this.appClient.send.call(ConsentAppParamsFactory.getConsent(params))
+      return {...result, return: result.return as unknown as (undefined | ConsentAppReturns['get_consent(string,string,string)string'])}
     },
 
   }
@@ -553,6 +599,19 @@ export class ConsentAppClient {
    */
   public clone(params: CloneAppClientParams) {
     return new ConsentAppClient(this.appClient.clone(params))
+  }
+
+  /**
+   * Makes a readonly (simulated) call to the ConsentApp smart contract using the `get_consent(string,string,string)string` ABI method.
+   * 
+   * This method is a readonly method; calling it with onComplete of NoOp will result in a simulated transaction rather than a real transaction.
+   *
+   * @param params The params for the smart contract call
+   * @returns The call result
+   */
+  async getConsent(params: CallParams<ConsentAppArgs['obj']['get_consent(string,string,string)string'] | ConsentAppArgs['tuple']['get_consent(string,string,string)string']>) {
+    const result = await this.appClient.send.call(ConsentAppParamsFactory.getConsent(params))
+    return result.return as unknown as ConsentAppReturns['get_consent(string,string,string)string']
   }
 
   /**
@@ -581,6 +640,14 @@ export class ConsentAppClient {
       revokeConsent(params: CallParams<ConsentAppArgs['obj']['revoke_consent(string,string,string)string'] | ConsentAppArgs['tuple']['revoke_consent(string,string,string)string']> & {onComplete?: OnApplicationComplete.NoOpOC}) {
         promiseChain = promiseChain.then(async () => composer.addAppCallMethodCall(await client.params.revokeConsent(params)))
         resultMappers.push((v) => client.decodeReturnValue('revoke_consent(string,string,string)string', v))
+        return this
+      },
+      /**
+       * Add a get_consent(string,string,string)string method call against the ConsentApp contract
+       */
+      getConsent(params: CallParams<ConsentAppArgs['obj']['get_consent(string,string,string)string'] | ConsentAppArgs['tuple']['get_consent(string,string,string)string']> & {onComplete?: OnApplicationComplete.NoOpOC}) {
+        promiseChain = promiseChain.then(async () => composer.addAppCallMethodCall(await client.params.getConsent(params)))
+        resultMappers.push((v) => client.decodeReturnValue('get_consent(string,string,string)string', v))
         return this
       },
       /**
@@ -621,8 +688,6 @@ export type ConsentAppComposer<TReturns extends [...any[]] = []> = {
   /**
    * Calls the grant_consent(string,string,string)string ABI method.
    *
-   * Record a grant event; keep payload minimal for audit only.
-   *
    * @param args The arguments for the contract call
    * @param params Any additional parameters for the call
    * @returns The typed transaction composer so you can fluently chain multiple calls or call execute to execute all queued up transactions
@@ -632,13 +697,20 @@ export type ConsentAppComposer<TReturns extends [...any[]] = []> = {
   /**
    * Calls the revoke_consent(string,string,string)string ABI method.
    *
-   * Record a revoke event; keep payload minimal for audit only.
-   *
    * @param args The arguments for the contract call
    * @param params Any additional parameters for the call
    * @returns The typed transaction composer so you can fluently chain multiple calls or call execute to execute all queued up transactions
    */
   revokeConsent(params?: CallParams<ConsentAppArgs['obj']['revoke_consent(string,string,string)string'] | ConsentAppArgs['tuple']['revoke_consent(string,string,string)string']>): ConsentAppComposer<[...TReturns, ConsentAppReturns['revoke_consent(string,string,string)string'] | undefined]>
+
+  /**
+   * Calls the get_consent(string,string,string)string ABI method.
+   *
+   * @param args The arguments for the contract call
+   * @param params Any additional parameters for the call
+   * @returns The typed transaction composer so you can fluently chain multiple calls or call execute to execute all queued up transactions
+   */
+  getConsent(params?: CallParams<ConsentAppArgs['obj']['get_consent(string,string,string)string'] | ConsentAppArgs['tuple']['get_consent(string,string,string)string']>): ConsentAppComposer<[...TReturns, ConsentAppReturns['get_consent(string,string,string)string'] | undefined]>
 
   /**
    * Makes a clear_state call to an existing instance of the ConsentApp smart contract.

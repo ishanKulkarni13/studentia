@@ -18,7 +18,6 @@ const AppCalls = ({ openModal, setModalState }: AppCallsInterface) => {
   const [receiverGroup, setReceiverGroup] = useState<string>("College");
   const [receiverGroupCustom, setReceiverGroupCustom] = useState<string>("");
   const [logs, setLogs] = useState<{ status: "Granted" | "Revoked"; receiver: string; data: string; txId: string }[]>([]);
-  const [records, setRecords] = useState<{ status: string; receiver: string; data: string; txId: string }[]>([]);
   const apiBase = useMemo(() => import.meta.env.VITE_API_BASE as string | undefined, []);
   const { enqueueSnackbar } = useSnackbar();
   const { transactionSigner, activeAddress } = useWallet();
@@ -96,8 +95,6 @@ const AppCalls = ({ openModal, setModalState }: AppCallsInterface) => {
           ...prev,
         ]);
         if (data.returnValue) enqueueSnackbar(`Contract returned: ${data.returnValue}`, { variant: "info" });
-        // fetch latest records after backend write
-        await refreshStatus(studentId.trim());
       } else {
         // Frontend signer path
         if (!transactionSigner || !activeAddress) {
@@ -111,9 +108,8 @@ const AppCalls = ({ openModal, setModalState }: AppCallsInterface) => {
         const algod = algorand.client.algod;
         const suggestedParams = await algod.getTransactionParams().do();
         suggestedParams.flatFee = true;
-        suggestedParams.fee = 1_000n;
+        suggestedParams.fee = 1_000;
         const atc = new algosdk.AtomicTransactionComposer();
-        const boxKey = `${studentId.trim()}:${receiverGroupValue}:${dataGroupValue}`;
         atc.addMethodCall({
           appID: appId,
           method: makeMethod(action === "grant" ? "grant_consent" : "revoke_consent"),
@@ -121,12 +117,6 @@ const AppCalls = ({ openModal, setModalState }: AppCallsInterface) => {
           suggestedParams,
           signer: transactionSigner,
           methodArgs: [studentId.trim(), receiverGroupValue, dataGroupValue],
-          boxes: [
-            {
-              appIndex: 0,
-              name: new TextEncoder().encode(boxKey),
-            },
-          ],
         });
         const result = await atc.execute(algod, 3);
         const txId = result.txIDs[0];
@@ -148,39 +138,6 @@ const AppCalls = ({ openModal, setModalState }: AppCallsInterface) => {
       enqueueSnackbar(`Error sending consent txn: ${message}`, { variant: "error" });
     }
     setLoading(false);
-  };
-
-  const refreshStatus = async (student: string) => {
-    if (!apiBase) {
-      enqueueSnackbar("Backend API not configured; set VITE_API_BASE for status reads", { variant: "warning" });
-      return;
-    }
-    if (!student.trim()) {
-      enqueueSnackbar("Student ID is required to fetch status", { variant: "warning" });
-      return;
-    }
-    try {
-      const resp = await fetch(`${apiBase}/consents/${encodeURIComponent(student.trim())}`, {
-        headers: {
-          ...(import.meta.env.VITE_API_TOKEN ? { Authorization: `Bearer ${import.meta.env.VITE_API_TOKEN}` } : {}),
-        },
-      });
-      const data = await resp.json();
-      if (!resp.ok) throw new Error(data.error || "Backend error");
-      const recs = (data.records as any[] | undefined) || [];
-      setRecords(
-        recs.map((r) => ({
-          status: r.status ?? "unknown",
-          receiver: r.receiverGroup ?? r.receiver ?? "",
-          data: r.dataGroup ?? r.data ?? "",
-          txId: r.txId ?? "",
-        }))
-      );
-      enqueueSnackbar("Status refreshed", { variant: "success" });
-    } catch (e) {
-      const message = e instanceof Error ? e.message : "Unknown error";
-      enqueueSnackbar(`Error fetching status: ${message}`, { variant: "error" });
-    }
   };
 
   return (
@@ -248,14 +205,6 @@ const AppCalls = ({ openModal, setModalState }: AppCallsInterface) => {
               {loading ? <span className="loading loading-spinner" /> : "Revoke"}
             </button>
           </div>
-          <button
-            type="button"
-            className="btn btn-outline"
-            onClick={() => refreshStatus(studentId)}
-            disabled={loading}
-          >
-            Refresh status
-          </button>
         </div>
 
         {logs.length > 0 && (
@@ -276,24 +225,6 @@ const AppCalls = ({ openModal, setModalState }: AppCallsInterface) => {
                     ) : (
                       log.txId
                     )}
-                  </div>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
-
-        {records.length > 0 && (
-          <div className="mt-4 text-left">
-            <div className="font-semibold mb-2">Stored status (backend)</div>
-            <ul className="space-y-1 max-h-48 overflow-y-auto">
-              {records.map((rec, idx) => (
-                <li key={`${rec.txId}-${idx}`} className="text-sm border rounded p-2">
-                  <div>
-                    {rec.status} → {rec.receiver} / {rec.data}
-                  </div>
-                  <div className="text-xs text-blue-700 break-all">
-                    Txn: {rec.txId || "n/a"}
                   </div>
                 </li>
               ))}

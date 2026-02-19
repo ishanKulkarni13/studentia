@@ -13,7 +13,6 @@ const Home: React.FC<HomeProps> = () => {
   const [appCallsDemoModal, setAppCallsDemoModal] = useState<boolean>(false);
   const { activeAddress } = useWallet();
   const appId = useMemo(() => import.meta.env.VITE_APP_ID ?? "Set VITE_APP_ID", []);
-  const hasApiBase = useMemo(() => Boolean(import.meta.env.VITE_API_BASE), []);
 
   const toggleWalletModal = () => {
     setOpenWalletModal(!openWalletModal);
@@ -49,7 +48,7 @@ const Home: React.FC<HomeProps> = () => {
               {activeAddress ? "Change / Disconnect Wallet" : "Connect Wallet"}
             </button>
 
-            <button data-test-id="appcalls-demo" className={`btn ${!activeAddress && !hasApiBase ? "btn-disabled" : ""}`} onClick={toggleAppCallsModal}>
+            <button data-test-id="appcalls-demo" className={`btn ${!activeAddress ? "btn-disabled" : ""}`} onClick={toggleAppCallsModal}>
               Consent: Grant / Revoke
             </button>
 

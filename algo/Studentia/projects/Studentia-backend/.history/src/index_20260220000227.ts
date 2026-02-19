@@ -21,8 +21,17 @@ const app = express()
 app.use(cors())
 app.use(express.json())
 
-// Disable bearer auth for now (open routes). To re-enable: set API_TOKEN and swap maybeAuth to passport.authenticate.
-const maybeAuth = (_req: any, _res: any, next: any) => next()
+// Simple bearer token auth (set API_TOKEN in env)
+const apiToken = process.env.API_TOKEN || ''
+passport.use(
+  new bearer.Strategy((token, done) => {
+    if (apiToken && token === apiToken) return done(null, { token })
+    return done(null, false)
+  })
+)
+
+// Protect routes if API_TOKEN is set; otherwise allow open (hackathon-friendly)
+const maybeAuth = apiToken ? passport.authenticate('bearer', { session: false }) : (_req: any, _res: any, next: any) => next()
 
 app.get('/health', (_req, res) => res.json({ ok: true }))
 app.use('/consents', maybeAuth, consentsRouter)

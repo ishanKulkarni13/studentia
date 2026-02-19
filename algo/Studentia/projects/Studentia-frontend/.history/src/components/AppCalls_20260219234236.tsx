@@ -111,9 +111,8 @@ const AppCalls = ({ openModal, setModalState }: AppCallsInterface) => {
         const algod = algorand.client.algod;
         const suggestedParams = await algod.getTransactionParams().do();
         suggestedParams.flatFee = true;
-        suggestedParams.fee = 1_000n;
+        suggestedParams.fee = 1_000;
         const atc = new algosdk.AtomicTransactionComposer();
-        const boxKey = `${studentId.trim()}:${receiverGroupValue}:${dataGroupValue}`;
         atc.addMethodCall({
           appID: appId,
           method: makeMethod(action === "grant" ? "grant_consent" : "revoke_consent"),
@@ -121,12 +120,6 @@ const AppCalls = ({ openModal, setModalState }: AppCallsInterface) => {
           suggestedParams,
           signer: transactionSigner,
           methodArgs: [studentId.trim(), receiverGroupValue, dataGroupValue],
-          boxes: [
-            {
-              appIndex: 0,
-              name: new TextEncoder().encode(boxKey),
-            },
-          ],
         });
         const result = await atc.execute(algod, 3);
         const txId = result.txIDs[0];

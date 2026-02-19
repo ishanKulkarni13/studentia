@@ -111,7 +111,7 @@ const AppCalls = ({ openModal, setModalState }: AppCallsInterface) => {
         const algod = algorand.client.algod;
         const suggestedParams = await algod.getTransactionParams().do();
         suggestedParams.flatFee = true;
-        suggestedParams.fee = 1_000n;
+        suggestedParams.fee = 1_000;
         const atc = new algosdk.AtomicTransactionComposer();
         const boxKey = `${studentId.trim()}:${receiverGroupValue}:${dataGroupValue}`;
         atc.addMethodCall({
