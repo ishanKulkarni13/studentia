@@ -34,7 +34,7 @@ const AppCalls = ({ openModal, setModalState }: AppCallsInterface) => {
       case "mainnet":
         return "https://explorer.perawallet.app/tx/";
       default:
-        return "";
+        return ""; // LocalNet has no public explorer
     }
   }, [algodConfig.network]);
 
@@ -57,6 +57,99 @@ const AppCalls = ({ openModal, setModalState }: AppCallsInterface) => {
       ],
       returns: { type: "string" },
     });
+
+  const callConsent = async (action: "grant" | "revoke") => {
+    const dataGroupValue = resolveDataGroup();
+    const receiverGroupValue = resolveReceiverGroup();
+
+    if (!dataGroupValue || !receiverGroupValue || !studentId.trim()) {
+      enqueueSnackbar("Student ID, receiver group, and data group are required", { variant: "warning" });
+      return;
+    }
+
+    setLoading(true);
+    try {
+      if (apiBase) {
+        // Backend-signed path
+        const resp = await fetch(`${apiBase}/consents/${action === "grant" ? "grant" : "revoke"}`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            ...(import.meta.env.VITE_API_TOKEN ? { Authorization: `Bearer ${import.meta.env.VITE_API_TOKEN}` } : {}),
+          },
+          body: JSON.stringify({
+            studentId: studentId.trim(),
+            receiverGroup: receiverGroupValue,
+            dataGroup: dataGroupValue,
+          }),
+        });
+        const data = await resp.json();
+        if (!resp.ok) throw new Error(data.error || "Backend error");
+        const txId = data.txId as string;
+        enqueueSnackbar(`Txn sent: ${txId}`, { variant: "success" });
+        setLogs((prev) => [
+          {
+            status: action === "grant" ? "Granted" : "Revoked",
+            receiver: receiverGroupValue,
+            data: dataGroupValue,
+            txId,
+          },
+          ...prev,
+        ]);
+        if (data.returnValue) enqueueSnackbar(`Contract returned: ${data.returnValue}`, { variant: "info" });
+        // fetch latest records after backend write
+        await refreshStatus(studentId.trim());
+      } else {
+        // Frontend signer path
+        if (!transactionSigner || !activeAddress) {
+          enqueueSnackbar("Please connect wallet first", { variant: "warning" });
+          return;
+        }
+        if (!appId) {
+          enqueueSnackbar("Missing VITE_APP_ID env pointing to deployed contract", { variant: "error" });
+          return;
+        }
+        const algod = algorand.client.algod;
+        const suggestedParams = await algod.getTransactionParams().do();
+        suggestedParams.flatFee = true;
+        suggestedParams.fee = 1_000n;
+        const atc = new algosdk.AtomicTransactionComposer();
+        const boxKey = `${studentId.trim()}:${receiverGroupValue}:${dataGroupValue}`;
+        atc.addMethodCall({
+          appID: appId,
+          method: makeMethod(action === "grant" ? "grant_consent" : "revoke_consent"),
+          sender: activeAddress,
+          suggestedParams,
+          signer: transactionSigner,
+          methodArgs: [studentId.trim(), receiverGroupValue, dataGroupValue],
+          boxes: [
+            {
+              appIndex: 0,
+              name: new TextEncoder().encode(boxKey),
+            },
+          ],
+        });
+        const result = await atc.execute(algod, 3);
+        const txId = result.txIDs[0];
+        const returnValue = result.methodResults[0]?.returnValue as string | undefined;
+        enqueueSnackbar(`Txn sent: ${txId}`, { variant: "success" });
+        setLogs((prev) => [
+          {
+            status: action === "grant" ? "Granted" : "Revoked",
+            receiver: receiverGroupValue,
+            data: dataGroupValue,
+            txId,
+          },
+          ...prev,
+        ]);
+        if (returnValue) enqueueSnackbar(`Contract returned: ${returnValue}`, { variant: "info" });
+      }
+    } catch (e: unknown) {
+      const message = e instanceof Error ? e.message : "Unknown error";
+      enqueueSnackbar(`Error sending consent txn: ${message}`, { variant: "error" });
+    }
+    setLoading(false);
+  };
 
   const refreshStatus = async (student: string) => {
     if (!apiBase) {
@@ -124,96 +217,6 @@ const AppCalls = ({ openModal, setModalState }: AppCallsInterface) => {
     }
   };
 
-  const callConsent = async (action: "grant" | "revoke") => {
-    const dataGroupValue = resolveDataGroup();
-    const receiverGroupValue = resolveReceiverGroup();
-
-    if (!dataGroupValue || !receiverGroupValue || !studentId.trim()) {
-      enqueueSnackbar("Student ID, receiver group, and data group are required", { variant: "warning" });
-      return;
-    }
-
-    setLoading(true);
-    try {
-      if (apiBase) {
-        const resp = await fetch(`${apiBase}/consents/${action === "grant" ? "grant" : "revoke"}`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            ...(import.meta.env.VITE_API_TOKEN ? { Authorization: `Bearer ${import.meta.env.VITE_API_TOKEN}` } : {}),
-          },
-          body: JSON.stringify({
-            studentId: studentId.trim(),
-            receiverGroup: receiverGroupValue,
-            dataGroup: dataGroupValue,
-          }),
-        });
-        const data = await resp.json();
-        if (!resp.ok) throw new Error(data.error || "Backend error");
-        const txId = data.txId as string;
-        enqueueSnackbar(`Txn sent: ${txId}`, { variant: "success" });
-        setLogs((prev) => [
-          {
-            status: action === "grant" ? "Granted" : "Revoked",
-            receiver: receiverGroupValue,
-            data: dataGroupValue,
-            txId,
-          },
-          ...prev,
-        ]);
-        if (data.returnValue) enqueueSnackbar(`Contract returned: ${data.returnValue}`, { variant: "info" });
-        await refreshStatus(studentId.trim());
-      } else {
-        if (!transactionSigner || !activeAddress) {
-          enqueueSnackbar("Please connect wallet first", { variant: "warning" });
-          return;
-        }
-        if (!appId) {
-          enqueueSnackbar("Missing VITE_APP_ID env pointing to deployed contract", { variant: "error" });
-          return;
-        }
-        const algod = algorand.client.algod;
-        const suggestedParams = await algod.getTransactionParams().do();
-        suggestedParams.flatFee = true;
-        suggestedParams.fee = 1_000n;
-        const atc = new algosdk.AtomicTransactionComposer();
-        const boxKey = `${studentId.trim()}:${receiverGroupValue}:${dataGroupValue}`;
-        atc.addMethodCall({
-          appID: appId,
-          method: makeMethod(action === "grant" ? "grant_consent" : "revoke_consent"),
-          sender: activeAddress,
-          suggestedParams,
-          signer: transactionSigner,
-          methodArgs: [studentId.trim(), receiverGroupValue, dataGroupValue],
-          boxes: [
-            {
-              appIndex: 0,
-              name: new TextEncoder().encode(boxKey),
-            },
-          ],
-        });
-        const result = await atc.execute(algod, 3);
-        const txId = result.txIDs[0];
-        const returnValue = result.methodResults[0]?.returnValue as string | undefined;
-        enqueueSnackbar(`Txn sent: ${txId}`, { variant: "success" });
-        setLogs((prev) => [
-          {
-            status: action === "grant" ? "Granted" : "Revoked",
-            receiver: receiverGroupValue,
-            data: dataGroupValue,
-            txId,
-          },
-          ...prev,
-        ]);
-        if (returnValue) enqueueSnackbar(`Contract returned: ${returnValue}`, { variant: "info" });
-      }
-    } catch (e: unknown) {
-      const message = e instanceof Error ? e.message : "Unknown error";
-      enqueueSnackbar(`Error sending consent txn: ${message}`, { variant: "error" });
-    }
-    setLoading(false);
-  };
-
   return (
     <dialog id="appcalls_modal" className={`modal ${openModal ? "modal-open" : ""} bg-slate-200`}>
       <form method="dialog" className="modal-box">
@@ -279,10 +282,20 @@ const AppCalls = ({ openModal, setModalState }: AppCallsInterface) => {
               {loading ? <span className="loading loading-spinner" /> : "Revoke"}
             </button>
           </div>
-          <button type="button" className="btn btn-outline" onClick={() => refreshStatus(studentId)} disabled={loading}>
+          <button
+            type="button"
+            className="btn btn-outline"
+            onClick={() => refreshStatus(studentId)}
+            disabled={loading}
+          >
             Refresh status
           </button>
-          <button type="button" className="btn btn-outline" onClick={() => refreshOnChainStatus(studentId)} disabled={loading}>
+          <button
+            type="button"
+            className="btn btn-outline"
+            onClick={() => refreshOnChainStatus(studentId)}
+            disabled={loading}
+          >
             Refresh on-chain
           </button>
         </div>
@@ -321,7 +334,9 @@ const AppCalls = ({ openModal, setModalState }: AppCallsInterface) => {
                   <div>
                     {rec.status} → {rec.receiver} / {rec.data}
                   </div>
-                  <div className="text-xs text-blue-700 break-all">Txn: {rec.txId || "n/a"}</div>
+                  <div className="text-xs text-blue-700 break-all">
+                    Txn: {rec.txId || "n/a"}
+                  </div>
                 </li>
               ))}
             </ul>

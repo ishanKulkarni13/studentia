@@ -1,6 +1,192 @@
 import { useWallet } from "@txnlab/use-wallet-react";
 import { useSnackbar } from "notistack";
-import { useMemo, useState } from "react";
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+- Connection refused on `/health`: backend process is not running or port 3000 is occupied by a stale process.- `invalid Box reference`: ensure the request path/args match tuple values exactly and backend is using latest code.- `Invalid API Token`: check backend `.env` `ALGOD_TOKEN` for LocalNet.## Troubleshooting```Invoke-WebRequest -Uri http://localhost:3000/consents/onchain/student-001 -UseBasicParsing | Select-Object -ExpandProperty Content# 6) On-chain bulkInvoke-WebRequest -Uri http://localhost:3000/consents/onchain/student-001/Recruiters/Portfolio -UseBasicParsing | Select-Object -ExpandProperty Content# 5) On-chain exact tupleInvoke-WebRequest -Uri http://localhost:3000/consents/student-001 -UseBasicParsing | Select-Object -ExpandProperty Content# 4) Backend recordsInvoke-WebRequest -Uri http://localhost:3000/consents/revoke -Method POST -ContentType 'application/json' -Body '{"studentId":"student-001","receiverGroup":"Recruiters","dataGroup":"Portfolio"}' -UseBasicParsing | Select-Object -ExpandProperty Content# 3) RevokeInvoke-WebRequest -Uri http://localhost:3000/consents/grant -Method POST -ContentType 'application/json' -Body '{"studentId":"student-001","receiverGroup":"Recruiters","dataGroup":"Portfolio"}' -UseBasicParsing | Select-Object -ExpandProperty Content# 2) GrantInvoke-WebRequest -Uri http://localhost:3000/health -UseBasicParsing | Select-Object -ExpandProperty Content# 1) Health```powershellRun backend and LocalNet first.## Quick test script (PowerShell)---```}  ]    }      "numeric": 0      "status": "revoked",      "boxKey": "student-001:College:Academic",      "dataGroup": "Academic",      "receiverGroup": "College",      "studentId": "student-001",    {    },      "numeric": 1      "status": "granted",      "boxKey": "student-001:Recruiters:Portfolio",      "dataGroup": "Portfolio",      "receiverGroup": "Recruiters",      "studentId": "student-001",    {  "statuses": [  "ok": true,{```json### Example response`GET /consents/onchain/student-001`### ExampleThis checks all unique receiver/data pairs known in backend records for that student and returns each tuple's current on-chain status.`GET /consents/onchain/:studentId`### Request## 6) Bulk on-chain status for one student---- `none` (box not found)- `revoked` (numeric `0`)- `granted` (numeric `1`)Possible `status` values:```}  "numeric": 1  "status": "granted",  "boxKey": "student-001:Recruiters:Portfolio",  "ok": true,{```json### Example response`GET /consents/onchain/student-001/Recruiters/Portfolio`### Example`GET /consents/onchain/:studentId/:receiverGroup/:dataGroup`### Request## 5) On-chain status for one exact tuple---```}  ]    }      }        "data": "..."        "tag": "...",        "iv": "...",      "encrypted": {      "txId": "KQ6...ABC",      "status": "granted",      "dataGroup": "Portfolio",      "receiverGroup": "Recruiters",      "studentId": "student-001",    {  "records": [  "ok": true,{```json### Example response`GET /consents/student-001`### Example`GET /consents/:studentId`### Request## 4) Backend in-memory records for a student---```}  "returnValue": "REVOKED:student-001:Recruiters:Portfolio"  "txId": "Y7T...XYZ",  "ok": true,{```json### Example response```}  "dataGroup": "Portfolio"  "receiverGroup": "Recruiters",  "studentId": "student-001",{```jsonBody:`POST /consents/revoke`### Request## 3) Revoke consent---```}  "returnValue": "GRANTED:student-001:Recruiters:Portfolio"  "txId": "KQ6...ABC",  "ok": true,{```json### Example response```}  "dataBlob": "optional payload"  "dataGroup": "Portfolio",  "receiverGroup": "Recruiters",  "studentId": "student-001",{```jsonBody:`POST /consents/grant`### Request## 2) Grant consent---```}  "ok": true{```json### Example response`GET /health`### Request## 1) Health- If re-enabled later, send: `Authorization: Bearer <API_TOKEN>`.- Currently auth is disabled in backend middleware for local development.Auth:Base URL (local): `http://localhost:3000`import { useMemo, useState } from "react";
 import algosdk from "algosdk";
 import { getAlgodConfigFromViteEnvironment } from "../utils/network/getAlgoClientConfigs";
 import { AlgorandClient } from "@algorandfoundation/algokit-utils";
@@ -34,7 +220,7 @@ const AppCalls = ({ openModal, setModalState }: AppCallsInterface) => {
       case "mainnet":
         return "https://explorer.perawallet.app/tx/";
       default:
-        return "";
+        return ""; // LocalNet has no public explorer
     }
   }, [algodConfig.network]);
 
@@ -57,6 +243,99 @@ const AppCalls = ({ openModal, setModalState }: AppCallsInterface) => {
       ],
       returns: { type: "string" },
     });
+
+  const callConsent = async (action: "grant" | "revoke") => {
+    const dataGroupValue = resolveDataGroup();
+    const receiverGroupValue = resolveReceiverGroup();
+
+    if (!dataGroupValue || !receiverGroupValue || !studentId.trim()) {
+      enqueueSnackbar("Student ID, receiver group, and data group are required", { variant: "warning" });
+      return;
+    }
+
+    setLoading(true);
+    try {
+      if (apiBase) {
+        // Backend-signed path
+        const resp = await fetch(`${apiBase}/consents/${action === "grant" ? "grant" : "revoke"}`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            ...(import.meta.env.VITE_API_TOKEN ? { Authorization: `Bearer ${import.meta.env.VITE_API_TOKEN}` } : {}),
+          },
+          body: JSON.stringify({
+            studentId: studentId.trim(),
+            receiverGroup: receiverGroupValue,
+            dataGroup: dataGroupValue,
+          }),
+        });
+        const data = await resp.json();
+        if (!resp.ok) throw new Error(data.error || "Backend error");
+        const txId = data.txId as string;
+        enqueueSnackbar(`Txn sent: ${txId}`, { variant: "success" });
+        setLogs((prev) => [
+          {
+            status: action === "grant" ? "Granted" : "Revoked",
+            receiver: receiverGroupValue,
+            data: dataGroupValue,
+            txId,
+          },
+          ...prev,
+        ]);
+        if (data.returnValue) enqueueSnackbar(`Contract returned: ${data.returnValue}`, { variant: "info" });
+        // fetch latest records after backend write
+        await refreshStatus(studentId.trim());
+      } else {
+        // Frontend signer path
+        if (!transactionSigner || !activeAddress) {
+          enqueueSnackbar("Please connect wallet first", { variant: "warning" });
+          return;
+        }
+        if (!appId) {
+          enqueueSnackbar("Missing VITE_APP_ID env pointing to deployed contract", { variant: "error" });
+          return;
+        }
+        const algod = algorand.client.algod;
+        const suggestedParams = await algod.getTransactionParams().do();
+        suggestedParams.flatFee = true;
+        suggestedParams.fee = 1_000n;
+        const atc = new algosdk.AtomicTransactionComposer();
+        const boxKey = `${studentId.trim()}:${receiverGroupValue}:${dataGroupValue}`;
+        atc.addMethodCall({
+          appID: appId,
+          method: makeMethod(action === "grant" ? "grant_consent" : "revoke_consent"),
+          sender: activeAddress,
+          suggestedParams,
+          signer: transactionSigner,
+          methodArgs: [studentId.trim(), receiverGroupValue, dataGroupValue],
+          boxes: [
+            {
+              appIndex: 0,
+              name: new TextEncoder().encode(boxKey),
+            },
+          ],
+        });
+        const result = await atc.execute(algod, 3);
+        const txId = result.txIDs[0];
+        const returnValue = result.methodResults[0]?.returnValue as string | undefined;
+        enqueueSnackbar(`Txn sent: ${txId}`, { variant: "success" });
+        setLogs((prev) => [
+          {
+            status: action === "grant" ? "Granted" : "Revoked",
+            receiver: receiverGroupValue,
+            data: dataGroupValue,
+            txId,
+          },
+          ...prev,
+        ]);
+        if (returnValue) enqueueSnackbar(`Contract returned: ${returnValue}`, { variant: "info" });
+      }
+    } catch (e: unknown) {
+      const message = e instanceof Error ? e.message : "Unknown error";
+      enqueueSnackbar(`Error sending consent txn: ${message}`, { variant: "error" });
+    }
+    setLoading(false);
+  };
 
   const refreshStatus = async (student: string) => {
     if (!apiBase) {
@@ -124,96 +403,6 @@ const AppCalls = ({ openModal, setModalState }: AppCallsInterface) => {
     }
   };
 
-  const callConsent = async (action: "grant" | "revoke") => {
-    const dataGroupValue = resolveDataGroup();
-    const receiverGroupValue = resolveReceiverGroup();
-
-    if (!dataGroupValue || !receiverGroupValue || !studentId.trim()) {
-      enqueueSnackbar("Student ID, receiver group, and data group are required", { variant: "warning" });
-      return;
-    }
-
-    setLoading(true);
-    try {
-      if (apiBase) {
-        const resp = await fetch(`${apiBase}/consents/${action === "grant" ? "grant" : "revoke"}`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            ...(import.meta.env.VITE_API_TOKEN ? { Authorization: `Bearer ${import.meta.env.VITE_API_TOKEN}` } : {}),
-          },
-          body: JSON.stringify({
-            studentId: studentId.trim(),
-            receiverGroup: receiverGroupValue,
-            dataGroup: dataGroupValue,
-          }),
-        });
-        const data = await resp.json();
-        if (!resp.ok) throw new Error(data.error || "Backend error");
-        const txId = data.txId as string;
-        enqueueSnackbar(`Txn sent: ${txId}`, { variant: "success" });
-        setLogs((prev) => [
-          {
-            status: action === "grant" ? "Granted" : "Revoked",
-            receiver: receiverGroupValue,
-            data: dataGroupValue,
-            txId,
-          },
-          ...prev,
-        ]);
-        if (data.returnValue) enqueueSnackbar(`Contract returned: ${data.returnValue}`, { variant: "info" });
-        await refreshStatus(studentId.trim());
-      } else {
-        if (!transactionSigner || !activeAddress) {
-          enqueueSnackbar("Please connect wallet first", { variant: "warning" });
-          return;
-        }
-        if (!appId) {
-          enqueueSnackbar("Missing VITE_APP_ID env pointing to deployed contract", { variant: "error" });
-          return;
-        }
-        const algod = algorand.client.algod;
-        const suggestedParams = await algod.getTransactionParams().do();
-        suggestedParams.flatFee = true;
-        suggestedParams.fee = 1_000n;
-        const atc = new algosdk.AtomicTransactionComposer();
-        const boxKey = `${studentId.trim()}:${receiverGroupValue}:${dataGroupValue}`;
-        atc.addMethodCall({
-          appID: appId,
-          method: makeMethod(action === "grant" ? "grant_consent" : "revoke_consent"),
-          sender: activeAddress,
-          suggestedParams,
-          signer: transactionSigner,
-          methodArgs: [studentId.trim(), receiverGroupValue, dataGroupValue],
-          boxes: [
-            {
-              appIndex: 0,
-              name: new TextEncoder().encode(boxKey),
-            },
-          ],
-        });
-        const result = await atc.execute(algod, 3);
-        const txId = result.txIDs[0];
-        const returnValue = result.methodResults[0]?.returnValue as string | undefined;
-        enqueueSnackbar(`Txn sent: ${txId}`, { variant: "success" });
-        setLogs((prev) => [
-          {
-            status: action === "grant" ? "Granted" : "Revoked",
-            receiver: receiverGroupValue,
-            data: dataGroupValue,
-            txId,
-          },
-          ...prev,
-        ]);
-        if (returnValue) enqueueSnackbar(`Contract returned: ${returnValue}`, { variant: "info" });
-      }
-    } catch (e: unknown) {
-      const message = e instanceof Error ? e.message : "Unknown error";
-      enqueueSnackbar(`Error sending consent txn: ${message}`, { variant: "error" });
-    }
-    setLoading(false);
-  };
-
   return (
     <dialog id="appcalls_modal" className={`modal ${openModal ? "modal-open" : ""} bg-slate-200`}>
       <form method="dialog" className="modal-box">
@@ -279,10 +468,20 @@ const AppCalls = ({ openModal, setModalState }: AppCallsInterface) => {
               {loading ? <span className="loading loading-spinner" /> : "Revoke"}
             </button>
           </div>
-          <button type="button" className="btn btn-outline" onClick={() => refreshStatus(studentId)} disabled={loading}>
+          <button
+            type="button"
+            className="btn btn-outline"
+            onClick={() => refreshStatus(studentId)}
+            disabled={loading}
+          >
             Refresh status
           </button>
-          <button type="button" className="btn btn-outline" onClick={() => refreshOnChainStatus(studentId)} disabled={loading}>
+          <button
+            type="button"
+            className="btn btn-outline"
+            onClick={() => refreshOnChainStatus(studentId)}
+            disabled={loading}
+          >
             Refresh on-chain
           </button>
         </div>
@@ -321,7 +520,9 @@ const AppCalls = ({ openModal, setModalState }: AppCallsInterface) => {
                   <div>
                     {rec.status} → {rec.receiver} / {rec.data}
                   </div>
-                  <div className="text-xs text-blue-700 break-all">Txn: {rec.txId || "n/a"}</div>
+                  <div className="text-xs text-blue-700 break-all">
+                    Txn: {rec.txId || "n/a"}
+                  </div>
                 </li>
               ))}
             </ul>
