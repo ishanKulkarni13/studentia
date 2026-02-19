@@ -1,5 +1,7 @@
+import DashboardLayout from "../components/DashboardLayout";
+
 function StudentDashboard() {
-  return <>Dashboard</>;
+  return <DashboardLayout />;
 }
 
 export default StudentDashboard;

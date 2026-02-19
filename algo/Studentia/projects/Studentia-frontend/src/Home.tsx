@@ -93,11 +93,9 @@ const Home: React.FC<HomeProps> = () => {
             </ol>
           </div>
 
-          <ConnectWallet openModal={openWalletModal} closeModal={toggleWalletModal} />
-          <Transact openModal={openDemoModal} setModalState={setOpenDemoModal} />
-          <AppCalls openModal={appCallsDemoModal} setModalState={setAppCallsDemoModal} />
-          <AccessRequests openModal={accessRequestsModal} setModalState={setAccessRequestsModal} />
-          <DocumentUploads openModal={documentsModal} setModalState={setDocumentsModal} />
+            <Link to="/dashboard">
+              <button className="btn btn-secondary">Go to Dashboard</button>
+            </Link>
         </div>
       </div>
       <div className="flex min-h-svh flex-col items-center justify-center">
