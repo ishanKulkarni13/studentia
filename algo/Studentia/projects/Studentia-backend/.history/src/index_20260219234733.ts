@@ -13,7 +13,7 @@ import cors from 'cors'
 import dotenv from 'dotenv'
 import bearer from 'passport-http-bearer'
 import passport from 'passport'
-import { consentsRouter } from './routes/consents.js'
+import { consentsRouter } from './routes/consents'
 
 dotenv.config()
 

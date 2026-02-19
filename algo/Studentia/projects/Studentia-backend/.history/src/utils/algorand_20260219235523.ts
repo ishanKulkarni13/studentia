@@ -1,28 +1,20 @@
 import algosdk from 'algosdk'
-import dotenv from 'dotenv'
 
-dotenv.config()
+const appId = Number(process.env.APP_ID || 0)
+const algodServer = process.env.ALGOD_SERVER || ''
+const algodToken = process.env.ALGOD_TOKEN || ''
+const algodPort = Number(process.env.ALGOD_PORT || 443)
+const signerMnemonic = process.env.SIGNER_MNEMONIC || ''
 
-function loadConfig() {
-  const appId = Number(process.env.APP_ID || 0)
-  if (!appId) throw new Error('APP_ID env not set')
-
-  const algodServer = process.env.ALGOD_SERVER || ''
-  const algodToken = process.env.ALGOD_TOKEN || ''
-  const algodPort = Number(process.env.ALGOD_PORT || 443)
-  const signerMnemonic = process.env.SIGNER_MNEMONIC || ''
-
-  if (!algodServer) throw new Error('ALGOD_SERVER env not set')
-  if (!signerMnemonic) throw new Error('SIGNER_MNEMONIC missing')
-
-  return { appId, algodServer, algodToken, algodPort, signerMnemonic }
+if (!appId) {
+  console.warn('APP_ID env not set')
 }
 
-const config = loadConfig()
-const algod = new algosdk.Algodv2(config.algodToken, config.algodServer, config.algodPort)
+const algod = new algosdk.Algodv2(algodToken, algodServer, algodPort)
 
 function getAccount() {
-  return algosdk.mnemonicToSecretKey(config.signerMnemonic)
+  if (!signerMnemonic) throw new Error('SIGNER_MNEMONIC missing')
+  return algosdk.mnemonicToSecretKey(signerMnemonic)
 }
 
 function method(name: string) {
@@ -41,7 +33,7 @@ export async function callConsent(
   action: 'grant' | 'revoke',
   args: { studentId: string; receiverGroup: string; dataGroup: string }
 ) {
-  const { appId } = config
+  if (!appId) throw new Error('APP_ID env not set')
   const acct = getAccount()
   const suggested = await algod.getTransactionParams().do()
   suggested.flatFee = true

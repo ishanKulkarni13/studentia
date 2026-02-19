@@ -1,13 +1,3 @@
-/**
- * Main entry point for the Studentia Backend API.
- * This Express.js server provides endpoints for managing consent grants and revokes on the Algorand blockchain.
- * It supports optional authentication via bearer tokens and AES-GCM encryption for stored data.
- *
- * Environment Variables:
- * - API_PORT: Port to listen on (default: 3000)
- * - API_TOKEN: Bearer token for authentication (optional; if not set, routes are open)
- */
-
 import express from 'express'
 import cors from 'cors'
 import dotenv from 'dotenv'

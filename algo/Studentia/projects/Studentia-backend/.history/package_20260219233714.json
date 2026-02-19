@@ -1,15 +1,14 @@
 {
   "name": "studentia-backend",
   "version": "0.1.0",
-    "main": "dist/index.js",
-    "type": "module",
+  "main": "dist/index.js",
+  "type": "module",
   "scripts": {
-    "dev": "nodemon --watch src --ext ts --exec \"tsx\" src/index.ts",
+    "dev": "nodemon --watch src --ext ts --exec ts-node-dev --respawn --transpile-only src/index.ts",
     "build": "tsc -p .",
     "start": "node dist/index.js"
   },
   "dependencies": {
-    "algosdk": "^2.7.0",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
@@ -23,7 +22,7 @@
     "@types/passport": "^1.0.13",
     "@types/passport-http-bearer": "^1.0.40",
     "nodemon": "^3.1.4",
-    "tsx": "^4.19.1",
+    "ts-node-dev": "^2.0.0",
     "typescript": "^5.4.5"
   }
 }
