@@ -4,6 +4,7 @@ import React, { useMemo } from "react";
 import ConnectWallet from "./components/ConnectWallet";
 import Transact from "./components/Transact";
 import AppCalls from "./components/AppCalls";
+import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { useUIStore } from "@/stores/uiStore";
 
@@ -91,13 +92,9 @@ const Home: React.FC<HomeProps> = () => {
             </ol>
           </div>
 
-          <Link to="/dashboard">
-            <button className="btn btn-secondary">Go to Dashboard</button>
-          </Link>
-
-          <ConnectWallet openModal={openWalletModal} closeModal={() => setWalletModal(false)} />
-          <Transact openModal={openDemoModal} setModalState={setDemoModal} />
-          <AppCalls openModal={appCallsDemoModal} setModalState={setAppCallsDemoModal} />
+            <Link to="/dashboard">
+              <button className="btn btn-secondary">Go to Dashboard</button>
+            </Link>
         </div>
       </div>
     </div>

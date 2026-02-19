@@ -4,6 +4,9 @@ import React, { useMemo } from "react";
 import ConnectWallet from "./components/ConnectWallet";
 import Transact from "./components/Transact";
 import AppCalls from "./components/AppCalls";
+import AccessRequests from "./components/AccessRequests";
+import DocumentUploads from "./components/DocumentUploads";
+import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { useUIStore } from "@/stores/uiStore";
 
@@ -17,6 +20,10 @@ const Home: React.FC<HomeProps> = () => {
     setDemoModal,
     appCallsDemoModal,
     setAppCallsDemoModal,
+    accessRequestsModal,
+    setAccessRequestsModal,
+    documentsModal,
+    setDocumentsModal,
   } = useUIStore();
 
   const { activeAddress } = useWallet();
@@ -33,6 +40,14 @@ const Home: React.FC<HomeProps> = () => {
 
   const toggleAppCallsModal = () => {
     setAppCallsDemoModal(!appCallsDemoModal);
+  };
+
+  const toggleAccessRequestsModal = () => {
+    setAccessRequestsModal(!accessRequestsModal);
+  };
+
+  const toggleDocumentsModal = () => {
+    setDocumentsModal(!documentsModal);
   };
 
   return (
@@ -65,17 +80,13 @@ const Home: React.FC<HomeProps> = () => {
               Consent: Grant / Revoke
             </button>
 
-            <Link to="/dashboard/access-requests">
-              <button data-test-id="access-requests-demo" className={`btn ${!hasApiBase ? "btn-disabled" : ""}`}>
-                Access Requests (test)
-              </button>
-            </Link>
+            <button data-test-id="access-requests-demo" className={`btn ${!hasApiBase ? "btn-disabled" : ""}`} onClick={toggleAccessRequestsModal}>
+              Access Requests (test)
+            </button>
 
-            <Link to="/dashboard/documents">
-              <button data-test-id="documents-demo" className={`btn ${!hasApiBase ? "btn-disabled" : ""}`}>
-                Documents Upload (test)
-              </button>
-            </Link>
+            <button data-test-id="documents-demo" className={`btn ${!hasApiBase ? "btn-disabled" : ""}`} onClick={toggleDocumentsModal}>
+              Documents Upload (test)
+            </button>
 
             <button data-test-id="transactions-demo" className={`btn ${!activeAddress ? "btn-disabled" : ""}`} onClick={toggleDemoModal}>
               Send 1 Algo (test)
@@ -91,13 +102,9 @@ const Home: React.FC<HomeProps> = () => {
             </ol>
           </div>
 
-          <Link to="/dashboard">
-            <button className="btn btn-secondary">Go to Dashboard</button>
-          </Link>
-
-          <ConnectWallet openModal={openWalletModal} closeModal={() => setWalletModal(false)} />
-          <Transact openModal={openDemoModal} setModalState={setDemoModal} />
-          <AppCalls openModal={appCallsDemoModal} setModalState={setAppCallsDemoModal} />
+            <Link to="/dashboard">
+              <button className="btn btn-secondary">Go to Dashboard</button>
+            </Link>
         </div>
       </div>
     </div>

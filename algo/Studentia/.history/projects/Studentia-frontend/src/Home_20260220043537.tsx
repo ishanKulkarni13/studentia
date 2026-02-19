@@ -95,7 +95,7 @@ const Home: React.FC<HomeProps> = () => {
             <button className="btn btn-secondary">Go to Dashboard</button>
           </Link>
 
-          <ConnectWallet openModal={openWalletModal} closeModal={() => setWalletModal(false)} />
+          <ConnectWallet openModal={openWalletModal} setModalState={setWalletModal} />
           <Transact openModal={openDemoModal} setModalState={setDemoModal} />
           <AppCalls openModal={appCallsDemoModal} setModalState={setAppCallsDemoModal} />
         </div>
