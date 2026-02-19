@@ -55,7 +55,7 @@ export default function App() {
       <WalletProvider manager={walletManager}>
         <Home />
         <Routes>
-          <Route path="/dashboard" element={<StudentDashboard />} />
+          <Route path="/" element={<StudentDashboard />} />
         </Routes>
       </WalletProvider>
     </SnackbarProvider>
