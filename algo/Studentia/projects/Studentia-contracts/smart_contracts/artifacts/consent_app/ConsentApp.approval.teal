@@ -65,7 +65,7 @@ grant_consent:
     ==
     assert // invalid number of bytes for arc4.dynamic_array<arc4.uint8>
     extract 2 0
-    // smart_contracts/consent_app/contract.py:9
+    // smart_contracts/consent_app/contract.py:8
     // return "GRANTED:" + student_id + ":" + receiver_group + ":" + data_group
     pushbytes "GRANTED:"
     uncover 3
@@ -96,7 +96,7 @@ grant_consent:
 
 // smart_contracts.consent_app.contract.ConsentApp.revoke_consent[routing]() -> void:
 revoke_consent:
-    // smart_contracts/consent_app/contract.py:11
+    // smart_contracts/consent_app/contract.py:10
     // @abimethod()
     txna ApplicationArgs 1
     dup
@@ -131,7 +131,7 @@ revoke_consent:
     ==
     assert // invalid number of bytes for arc4.dynamic_array<arc4.uint8>
     extract 2 0
-    // smart_contracts/consent_app/contract.py:14
+    // smart_contracts/consent_app/contract.py:12
     // return "REVOKED:" + student_id + ":" + receiver_group + ":" + data_group
     pushbytes "REVOKED:"
     uncover 3
@@ -144,7 +144,7 @@ revoke_consent:
     concat
     swap
     concat
-    // smart_contracts/consent_app/contract.py:11
+    // smart_contracts/consent_app/contract.py:10
     // @abimethod()
     dup
     len
