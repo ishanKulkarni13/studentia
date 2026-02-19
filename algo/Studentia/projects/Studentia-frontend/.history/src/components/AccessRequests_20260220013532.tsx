@@ -92,7 +92,7 @@ const AccessRequests = ({ openModal, setModalState }: AccessRequestsProps) => {
     }
     setLoading(true);
     try {
-      const { resp, data } = await fetchAccess("", {
+      const resp = await fetch(`${apiBase}/access-requests`, {
         method: "POST",
         headers: headers(true),
         body: JSON.stringify({
@@ -102,6 +102,7 @@ const AccessRequests = ({ openModal, setModalState }: AccessRequestsProps) => {
           purpose: purpose.trim(),
         }),
       });
+      const data = await parseResponse(resp);
       if (!resp.ok) throw new Error(data.error || "failed to create request");
       const createdId = data.request?.id as string | undefined;
       if (createdId) setRequestId(createdId);

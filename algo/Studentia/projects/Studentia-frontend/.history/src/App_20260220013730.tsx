@@ -54,9 +54,7 @@ export default function App() {
     <SnackbarProvider maxSnack={3}>
       <WalletProvider manager={walletManager}>
         <Home />
-        <Routes>
-          <StudentDashboard />
-        </Routes>
+        <StudentDashboard />
       </WalletProvider>
     </SnackbarProvider>
   );
