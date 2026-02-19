@@ -1,0 +1,316 @@
+#pragma version 11
+#pragma typetrack false
+
+// algopy.arc4.ARC4Contract.approval_program() -> uint64:
+main:
+    intcblock 0 2 1 8
+    bytecblock ":" 0x151f7c75 "GRANTED:" "REVOKED:"
+    // smart_contracts/consent_app/contract.py:5
+    // class ConsentApp(ARC4Contract):
+    txn NumAppArgs
+    bz main___algopy_default_create@10
+    txn OnCompletion
+    !
+    assert
+    txn ApplicationID
+    assert
+    pushbytess 0x5bc68326 0xff2afc43 0x46216609 // method "grant_consent(string,string,string)string", method "revoke_consent(string,string,string)string", method "get_consent(string,string,string)string"
+    txna ApplicationArgs 0
+    match grant_consent revoke_consent get_consent
+    err
+
+main___algopy_default_create@10:
+    txn OnCompletion
+    !
+    txn ApplicationID
+    !
+    &&
+    return
+
+
+// smart_contracts.consent_app.contract.ConsentApp.grant_consent[routing]() -> void:
+grant_consent:
+    // smart_contracts/consent_app/contract.py:15
+    // @abimethod()
+    txna ApplicationArgs 1
+    dup
+    intc_0 // 0
+    extract_uint16 // on error: invalid array length header
+    intc_1 // 2
+    +
+    dig 1
+    len
+    ==
+    assert // invalid number of bytes for arc4.dynamic_array<arc4.uint8>
+    extract 2 0
+    txna ApplicationArgs 2
+    dup
+    intc_0 // 0
+    extract_uint16 // on error: invalid array length header
+    intc_1 // 2
+    +
+    dig 1
+    len
+    ==
+    assert // invalid number of bytes for arc4.dynamic_array<arc4.uint8>
+    extract 2 0
+    txna ApplicationArgs 3
+    dup
+    intc_0 // 0
+    extract_uint16 // on error: invalid array length header
+    intc_1 // 2
+    +
+    dig 1
+    len
+    ==
+    assert // invalid number of bytes for arc4.dynamic_array<arc4.uint8>
+    extract 2 0
+    // smart_contracts/consent_app/contract.py:9
+    // return student_id + ":" + receiver_group + ":" + data_group
+    uncover 2
+    bytec_0 // ":"
+    concat
+    uncover 2
+    concat
+    bytec_0 // ":"
+    concat
+    swap
+    concat
+    dup
+    // smart_contracts/consent_app/contract.py:19
+    // if not consent_box:
+    box_len
+    bury 1
+    bnz grant_consent_after_if_else@3
+    // smart_contracts/consent_app/contract.py:20
+    // consent_box.create()
+    dup
+    intc_3 // 8
+    box_create
+    pop
+
+grant_consent_after_if_else@3:
+    // smart_contracts/consent_app/contract.py:21
+    // consent_box.value = UInt64(1)
+    intc_2 // 1
+    itob
+    dig 1
+    dup
+    uncover 2
+    box_put
+    // smart_contracts/consent_app/contract.py:22
+    // return "GRANTED:" + key
+    bytec_2 // "GRANTED:"
+    swap
+    concat
+    // smart_contracts/consent_app/contract.py:15
+    // @abimethod()
+    dup
+    len
+    itob
+    extract 6 2
+    swap
+    concat
+    bytec_1 // 0x151f7c75
+    swap
+    concat
+    log
+    intc_2 // 1
+    return
+
+
+// smart_contracts.consent_app.contract.ConsentApp.revoke_consent[routing]() -> void:
+revoke_consent:
+    // smart_contracts/consent_app/contract.py:24
+    // @abimethod()
+    txna ApplicationArgs 1
+    dup
+    intc_0 // 0
+    extract_uint16 // on error: invalid array length header
+    intc_1 // 2
+    +
+    dig 1
+    len
+    ==
+    assert // invalid number of bytes for arc4.dynamic_array<arc4.uint8>
+    extract 2 0
+    txna ApplicationArgs 2
+    dup
+    intc_0 // 0
+    extract_uint16 // on error: invalid array length header
+    intc_1 // 2
+    +
+    dig 1
+    len
+    ==
+    assert // invalid number of bytes for arc4.dynamic_array<arc4.uint8>
+    extract 2 0
+    txna ApplicationArgs 3
+    dup
+    intc_0 // 0
+    extract_uint16 // on error: invalid array length header
+    intc_1 // 2
+    +
+    dig 1
+    len
+    ==
+    assert // invalid number of bytes for arc4.dynamic_array<arc4.uint8>
+    extract 2 0
+    // smart_contracts/consent_app/contract.py:9
+    // return student_id + ":" + receiver_group + ":" + data_group
+    uncover 2
+    bytec_0 // ":"
+    concat
+    uncover 2
+    concat
+    bytec_0 // ":"
+    concat
+    swap
+    concat
+    dup
+    // smart_contracts/consent_app/contract.py:28
+    // if not consent_box:
+    box_len
+    bury 1
+    bnz revoke_consent_after_if_else@3
+    // smart_contracts/consent_app/contract.py:29
+    // consent_box.create()
+    dup
+    intc_3 // 8
+    box_create
+    pop
+
+revoke_consent_after_if_else@3:
+    // smart_contracts/consent_app/contract.py:30
+    // consent_box.value = UInt64(0)
+    intc_0 // 0
+    itob
+    dig 1
+    dup
+    uncover 2
+    box_put
+    // smart_contracts/consent_app/contract.py:31
+    // return "REVOKED:" + key
+    bytec_3 // "REVOKED:"
+    swap
+    concat
+    // smart_contracts/consent_app/contract.py:24
+    // @abimethod()
+    dup
+    len
+    itob
+    extract 6 2
+    swap
+    concat
+    bytec_1 // 0x151f7c75
+    swap
+    concat
+    log
+    intc_2 // 1
+    return
+
+
+// smart_contracts.consent_app.contract.ConsentApp.get_consent[routing]() -> void:
+get_consent:
+    // smart_contracts/consent_app/contract.py:33
+    // @abimethod(readonly=True)
+    txna ApplicationArgs 1
+    dup
+    intc_0 // 0
+    extract_uint16 // on error: invalid array length header
+    intc_1 // 2
+    +
+    dig 1
+    len
+    ==
+    assert // invalid number of bytes for arc4.dynamic_array<arc4.uint8>
+    extract 2 0
+    txna ApplicationArgs 2
+    dup
+    intc_0 // 0
+    extract_uint16 // on error: invalid array length header
+    intc_1 // 2
+    +
+    dig 1
+    len
+    ==
+    assert // invalid number of bytes for arc4.dynamic_array<arc4.uint8>
+    extract 2 0
+    txna ApplicationArgs 3
+    dup
+    intc_0 // 0
+    extract_uint16 // on error: invalid array length header
+    intc_1 // 2
+    +
+    dig 1
+    len
+    ==
+    assert // invalid number of bytes for arc4.dynamic_array<arc4.uint8>
+    extract 2 0
+    // smart_contracts/consent_app/contract.py:9
+    // return student_id + ":" + receiver_group + ":" + data_group
+    uncover 2
+    bytec_0 // ":"
+    concat
+    uncover 2
+    concat
+    bytec_0 // ":"
+    concat
+    swap
+    concat
+    dup
+    // smart_contracts/consent_app/contract.py:37
+    // if not consent_box:
+    box_len
+    bury 1
+    bnz get_consent_after_if_else@3
+    // smart_contracts/consent_app/contract.py:38
+    // return "NONE:" + key
+    pushbytes "NONE:"
+    dig 1
+    concat
+
+get_consent_after_inlined_smart_contracts.consent_app.contract.ConsentApp.get_consent@7:
+    // smart_contracts/consent_app/contract.py:33
+    // @abimethod(readonly=True)
+    dup
+    len
+    itob
+    extract 6 2
+    swap
+    concat
+    bytec_1 // 0x151f7c75
+    swap
+    concat
+    log
+    intc_2 // 1
+    return
+
+get_consent_after_if_else@3:
+    // smart_contracts/consent_app/contract.py:39
+    // status = consent_box.value
+    dup
+    box_get
+    assert // check Box exists
+    btoi
+    // smart_contracts/consent_app/contract.py:40
+    // return ("GRANTED:" if status == UInt64(1) else "REVOKED:") + key
+    intc_2 // 1
+    ==
+    bz get_consent_ternary_false@5
+    bytec_2 // "GRANTED:"
+
+get_consent_ternary_merge@6:
+    // smart_contracts/consent_app/contract.py:40
+    // return ("GRANTED:" if status == UInt64(1) else "REVOKED:") + key
+    dig 1
+    concat
+    // smart_contracts/consent_app/contract.py:33
+    // @abimethod(readonly=True)
+    b get_consent_after_inlined_smart_contracts.consent_app.contract.ConsentApp.get_consent@7
+
+get_consent_ternary_false@5:
+    // smart_contracts/consent_app/contract.py:40
+    // return ("GRANTED:" if status == UInt64(1) else "REVOKED:") + key
+    bytec_3 // "REVOKED:"
+    b get_consent_ternary_merge@6
