@@ -1,0 +1,11 @@
+[algokit]
+min_version = "v2.0.0"
+
+[project]
+type = "frontend"
+name = 'Studentia-frontend'
+artifacts = "src/contracts"
+
+[project.run]
+build = { commands = ['pnpm run build'], description = 'Build frontend' }
+test = { commands = ['pnpm run test'], description = 'Run frontend tests' }
