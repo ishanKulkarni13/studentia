@@ -17,8 +17,7 @@
     },
     "jest.disabledWorkspaceFolders": ["ROOT", "projects"],
     "dotenv.enableAutocloaking": false,
-    "prisma-smart-formatter.typescript.defaultFormatter": "esbenp.prettier-vscode",
-    "prisma-smart-formatter.typescriptreact.defaultFormatter": "esbenp.prettier-vscode"
+    "prisma-smart-formatter.typescript.defaultFormatter": "esbenp.prettier-vscode"
   },
   "extensions": {
     "recommendations": ["joshx.workspace-terminals"]

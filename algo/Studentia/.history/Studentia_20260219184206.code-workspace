@@ -16,14 +16,12 @@
       "projects/": true
     },
     "jest.disabledWorkspaceFolders": ["ROOT", "projects"],
-    "dotenv.enableAutocloaking": false,
-    "prisma-smart-formatter.typescript.defaultFormatter": "esbenp.prettier-vscode",
-    "prisma-smart-formatter.typescriptreact.defaultFormatter": "esbenp.prettier-vscode"
+    "dotenv.enableAutocloaking": false
   },
   "extensions": {
     "recommendations": ["joshx.workspace-terminals"]
   },
-
+  
   "tasks": {
     "version": "2.0.0",
     "tasks": [
