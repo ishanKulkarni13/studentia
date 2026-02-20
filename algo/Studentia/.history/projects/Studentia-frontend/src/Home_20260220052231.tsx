@@ -11,7 +11,9 @@ interface HomeProps {}
 
 const Home: React.FC<HomeProps> = () => {
   const { openWalletModal, setWalletModal } = useUIStore();
+  const { activeAddress } = useWallet();
   const navigate = useNavigate();
+  const appId = useMemo(() => import.meta.env.VITE_APP_ID ?? "Set VITE_APP_ID", []);
   const network = useMemo(() => import.meta.env.VITE_ALGOD_NETWORK ?? "localnet", []);
   const hasApiBase = useMemo(() => Boolean(import.meta.env.VITE_API_BASE), []);
 

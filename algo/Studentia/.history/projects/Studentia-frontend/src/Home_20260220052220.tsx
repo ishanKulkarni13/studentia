@@ -1,17 +1,21 @@
 // src/components/Home.tsx
 import React, { useMemo } from "react";
+import { useWallet } from "@txnlab/use-wallet-react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import ConnectWallet from "./components/ConnectWallet";
 import { useUIStore } from "@/stores/uiStore";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { ellipseAddress } from "@/utils/ellipseAddress";
 
 interface HomeProps {}
 
 const Home: React.FC<HomeProps> = () => {
   const { openWalletModal, setWalletModal } = useUIStore();
+  const { activeAddress } = useWallet();
   const navigate = useNavigate();
+  const appId = useMemo(() => import.meta.env.VITE_APP_ID ?? "Set VITE_APP_ID", []);
   const network = useMemo(() => import.meta.env.VITE_ALGOD_NETWORK ?? "localnet", []);
   const hasApiBase = useMemo(() => Boolean(import.meta.env.VITE_API_BASE), []);
 
